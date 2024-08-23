@@ -1,0 +1,34 @@
+{
+  "name": "app-monitoramento-hipertensao-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "ts-node-dev --transpile-only src/server.ts",
+    "seed": "npx prisma db seed",
+    "migrate": "npx prisma migrate dev"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^5.3.1",
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.3.1",
+    "dotenv-cli": "^7.3.0",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.1",
+    "@types/express": "^4.17.17",
+    "@types/jsonwebtoken": "^9.0.4",
+    "prisma": "^5.3.1",
+    "ts-node": "^10.9.1",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.1.6"
+  },
+  "prisma": {
+    "seed": "dotenv -e .env -- ts-node ./prisma/seed.ts"
+  }
+}
