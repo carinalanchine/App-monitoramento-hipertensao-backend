@@ -10,7 +10,7 @@ datasource db {
 enum Role {
   ADMIN
   PATIENT
-  DOCTOR
+  HEALTH_AGENT
 }
 
 enum MedicineTakenStatus {
@@ -31,6 +31,7 @@ model Hospital {
   updatedAt DateTime    @updatedAt @map("updated_at")
   users     User[]
   ListVideo ListVideo[]
+  ListTips  ListTips[]
 
   @@map("hospital")
 }
@@ -45,6 +46,17 @@ model ListVideo {
   updatedAt  DateTime @updatedAt @map("updated_at")
 
   @@map("list-video")
+}
+
+model ListTips {
+  id         String   @id @default(uuid())
+  tip        String
+  hospital   Hospital @relation(fields: [hospitalId], references: [id])
+  hospitalId String   @map("hospital_id")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  @@map("tips")
 }
 
 model User {
