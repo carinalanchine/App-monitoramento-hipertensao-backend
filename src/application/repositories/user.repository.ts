@@ -8,7 +8,7 @@ class UserRepository implements IUserRepository {
     try {
       const user = await prisma.user.findUnique({
         where: {
-          cpf,
+          cpf
         },
       });
 

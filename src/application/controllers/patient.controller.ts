@@ -7,51 +7,27 @@ class PatientController {
   async create(req: Request, res: Response) {
     try {
       const { cpf, name, password, hospital_id } = req.body;
-      const repositoryPatient = new PatientRepository();
+
+      if (!cpf) throw new Error("CPF missing");
+      if (!name) throw new Error("Name missing");
+      if (!password) throw new Error("Password missing");
+
+      const repository = new PatientRepository();
       const criptography = new CriptographyAdapter();
-      const useCase = new CreatePatientUseCase(
-        repositoryPatient,
-        criptography
-      );
+      const useCase = new CreatePatientUseCase(repository, criptography);
 
-      if (!cpf) {
-        res.status(400).json({
-          status: 400,
-          messenger: "cpf missing",
-        });
-      }
-      if (!name) {
-        res.status(400).json({
-          status: 400,
-          messenger: "name missing",
-        });
-      }
-      if (!password) {
-        res.status(400).json({
-          status: 400,
-          messenger: "password missing",
-        });
-      }
-
-      const patientWasCreated = await useCase.execute({
+      const createPatient = await useCase.execute({
         cpf,
         hospital_id,
         name,
         password,
       });
 
-      if (!patientWasCreated) {
-        res.status(400).json({
-          status: 400,
-          messenger: "Patient not created",
-        });
-      }
-
-      res.json({ status: 200, messenger: "Patient created", id: patientWasCreated.id });
+      res.status(200).json({ status: "success", message: "Patient created", id: createPatient });
     } catch (e) {
       const error = e as { message: string };
       res.status(400).json({
-        status: 400,
+        status: "error",
         message: error.message,
       });
     }

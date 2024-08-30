@@ -5,6 +5,6 @@ import { authenticateToken } from "../middleware/auth.middleware";
 
 const healthAgentRouter = Router();
 
-healthAgentRouter.post("/agent", authenticateToken, authorizationAdmin, healthAgentController.register);
+healthAgentRouter.post("/agent", authenticateToken, authorizationAdmin, healthAgentController.create);
 
 export default healthAgentRouter;

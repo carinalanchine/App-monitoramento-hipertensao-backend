@@ -4,7 +4,7 @@ import { CriptographyAdapter } from "../../infra/adapters/CriptograpyAdapter";
 import HealthAgentRepository from "../repositories/health-agent.repository";
 
 class HealthAgentController {
-  async register(req: Request, res: Response) {
+  async create(req: Request, res: Response) {
     try {
       const { name, cpf, password, hospitalID } = req.body;
 

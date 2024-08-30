@@ -4,6 +4,6 @@ import { authenticateToken } from "../middleware/auth.middleware";
 
 const patientRouter = Router();
 
-patientRouter.post("/patient", authenticateToken, patientController.create);
+patientRouter.post("/patient", patientController.create);
 
 export default patientRouter;

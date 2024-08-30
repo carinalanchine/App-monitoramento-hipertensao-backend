@@ -29,7 +29,7 @@ export class CreateHealthAgentUseCase {
       name,
       cpf,
       encryptedPassword,
-      RolesEnum.DOCTOR,
+      RolesEnum.HEALTH_AGENT,
       hospitalID
     );
 

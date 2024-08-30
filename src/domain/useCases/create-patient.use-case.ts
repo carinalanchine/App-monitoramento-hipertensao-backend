@@ -16,8 +16,8 @@ export class CreatePatientUseCase {
       role_tag: RolesEnum.PATIENT,
     });
 
-    if (!patientCreated) throw new Error("Patient not registered");
+    if (!patientCreated) throw new Error("Patient not created");
 
-    return { id: patientCreated.id };
+    return patientCreated.id;
   }
 }

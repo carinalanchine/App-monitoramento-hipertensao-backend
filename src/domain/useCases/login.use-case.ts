@@ -16,18 +16,17 @@ export class LoginUseCase {
   async execute(body: LoginUseCaseInput) {
     const { cpf, password } = body;
 
-    if (!cpf) throw new Error("cpf is required");
-    if (!password) throw new Error("password is required");
-
     const user = await this.userRepository.findByCpf(cpf);
 
-    if (!user) throw new Error("user not found");
+    if (!user) throw new Error("User not found");
 
     const validPassword = this.criptography.compare(password, user.password);
 
-    if (!validPassword) throw new Error("user not found");
+    if (!validPassword) throw new Error("Invalid password");
 
-    return this.generateToken(user.id, user.cpf, user.role_tag, user.hospital_id);
+    const token = this.generateToken(user.id, user.cpf, user.role_tag, user.hospital_id)
+
+    return { user, token };
   }
 
   generateToken(userId: string, cpf: string, role: string, hospitalId: string) {
