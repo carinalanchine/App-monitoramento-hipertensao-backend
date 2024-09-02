@@ -34,12 +34,13 @@ class BloodPressureController {
       const response = await useCase.execute({ patientId, systolic, diastolic });
 
       res.status(201).json({
+        status: "success",
         id: response.id,
       });
     } catch (e) {
       const error = e as { message: string };
       res.status(400).json({
-        status: 400,
+        status: "error",
         message: error.message,
       });
     }

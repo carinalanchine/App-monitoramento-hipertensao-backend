@@ -9,7 +9,7 @@ class PatientRepository {
     hospital_id,
     name,
     password,
-    role_tag,
+    role,
   }: CreatePatientInput): Promise<{ id: string } | null> {
     try {
       const userCreated = await prisma.user.create({
@@ -17,8 +17,8 @@ class PatientRepository {
           cpf,
           name,
           password,
-          role_tag,
-          hospital_id
+          role,
+          hospitalId: hospital_id
         }
       });
 

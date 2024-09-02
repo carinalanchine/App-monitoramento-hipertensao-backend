@@ -8,18 +8,15 @@ export function authenticateToken(
 ) {
   const token = req.headers.authorization;
 
-  if (!token) {
-    return res.status(401).json({ message: "Token não fornecido" });
-  }
+  if (!token)
+    return res.status(401).json({ status: "error", message: "Token não fornecido" });
 
   try {
     const jwtSecret = process.env.JWT_SECRET;
-
     const tokenValue = token.split(" ")[1];
 
-    if (!jwtSecret) {
+    if (!jwtSecret)
       throw new Error("JWT_SECRET não definido");
-    }
 
     const decoded = jwt.verify(tokenValue, jwtSecret);
 
@@ -27,6 +24,6 @@ export function authenticateToken(
 
     next();
   } catch (error) {
-    return res.status(403).json({ message: "Token inválido" });
+    return res.status(403).json({ status: "error", message: "Token inválido" });
   }
 }

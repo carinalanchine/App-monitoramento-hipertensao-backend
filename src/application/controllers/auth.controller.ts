@@ -17,12 +17,17 @@ class AuthController {
 
       const loginUser = await useCase.execute({ cpf, password });
 
+      if (!loginUser) throw new Error("Login not successful");
+
       res.status(200).json({
         status: "success",
         message: "Login successful",
-        id: loginUser.user.id,
-        name: loginUser.user.name,
-        token: loginUser.token
+        token: loginUser.token,
+        user: {
+          id: loginUser.user.id,
+          name: loginUser.user.name,
+          cpf: loginUser.user.cpf
+        }
       });
     } catch (e) {
       const error = e as { message: string };

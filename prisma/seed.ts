@@ -5,22 +5,22 @@ const prisma = new PrismaClient();
 
 async function main() {
   const hospital = await prisma.hospital.upsert({
-    where: { name: "Hospital Universitário Antonio Pedro" },
+    where: { name: "Hospital Universitário Antônio Pedro" },
     update: {},
     create: {
-      name: "Hospital Universitário Antonio Pedro",
+      name: "Hospital Universitário Antônio Pedro",
     },
   });
 
   await prisma.user.upsert({
-    where: { cpf: "195.407.567-74" },
+    where: { cpf: "000.000.000-00" },
     update: {},
     create: {
-      role_tag: RolesEnum.ADMIN,
-      cpf: "195.407.567-74",
+      role: RolesEnum.ADMIN,
+      cpf: "000.000.000-00",
       name: "Administrador",
       password: "$2b$10$SCR8CN9B20hftN6rAjyiBeJj4v/hGf17AJy9qMsmu3ZgjxnDxj1/C", //Senha 12345678
-      hospital_id: hospital.id,
+      hospitalId: hospital.id,
     },
   });
 }

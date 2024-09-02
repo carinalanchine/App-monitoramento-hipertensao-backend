@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import MedicineRepository from "../repositories/medicine.repository";
-import { DosageType } from "../../domain/entities/Medicine";
+//import { DosageType } from "../../domain/entities/Medicine";
 import { CreateMedicineUseCase } from "../../domain/useCases/create-medicine.use-case";
 import { TakeMedicineUseCase } from "../../domain/useCases/take-medicine.use-case";
 import { DeleteMedicineUseCase } from "../../domain/useCases/delete-medicine.use-case";
@@ -11,88 +11,36 @@ import { EditMedicineUseCase } from "../../domain/useCases/edit-medicine.use-cas
 class MedicineController {
   async create(req: Request, res: Response) {
     try {
-      const { name, color, patientId, initialDate, intervalInHour, dosage, dosageType } = req.body;
-      const repositoryMedicine = new MedicineRepository();
-      const useCase = new CreateMedicineUseCase(
-        repositoryMedicine,
-      );
+      const { name, patientId, interval, dosage } = req.body;
 
-      if (!name) {
-        res.status(400).json({
-          status: 400,
-          messenger: "name missing",
-        });
-        return;
-      }
-      if (!color) {
-        res.status(400).json({
-          status: 400,
-          messenger: "color missing",
-        });
-        return;
-      }
-      if (!patientId) {
-        res.status(400).json({
-          status: 400,
-          messenger: "patientId missing",
-        });
-        return;
-      }
-      if (!initialDate) {
-        res.status(400).json({
-          status: 400,
-          messenger: "initialDate missing",
-        });
-        return;
-      }
-      if (!intervalInHour) {
-        res.status(400).json({
-          status: 400,
-          messenger: "intervalInHour missing",
-        });
-        return;
-      }
-      if (!dosage) {
-        res.status(400).json({
-          status: 400,
-          messenger: "dosage missing",
-        });
-        return;
-      }
-      if (!dosageType) {
-        res.status(400).json({
-          status: 400,
-          messenger: "dosageType missing",
-        });
-        return;
-      }
+      if (!name) throw new Error("Name missing");
+      if (!patientId) throw new Error("Patient ID missing");
+      if (!interval) throw new Error("Interval missing");
+      if (!dosage) throw new Error("Dosage missing");
 
-      const medicineWasCreated = await useCase.execute({
+      const repository = new MedicineRepository();
+      const useCase = new CreateMedicineUseCase(repository);
+
+      const createMedicine = await useCase.execute({
         name,
-        color,
         patientId,
-        initialDate,
-        intervalInHour,
+        interval,
         dosage,
-        dosageType,
       });
 
-      if (!medicineWasCreated) {
-        res.status(400).json({
-          status: 400,
-          messenger: "Medicine not created",
-        });
-        return;
-      }
+      if (!createMedicine) throw new Error("Medicine not created");
 
-      res.json({ status: 200, messenger: "Medicine created", id: medicineWasCreated.id });
+      res.status(200).json({
+        status: "success",
+        message: "Medicine created",
+        id: createMedicine.id
+      });
     } catch (e) {
       const error = e as { message: string };
       res.status(400).json({
-        status: 400,
+        status: "error",
         message: error.message,
       });
-      return;
     }
   }
 
@@ -173,13 +121,14 @@ class MedicineController {
 
   async list(req: Request, res: Response) {
     try {
-      const patientId = "6bb79cb2-471d-4058-bf42-9c9c5d420dff";
+      const { patientId } = req.params;
+
       const repositoryMedicine = new MedicineRepository();
       const useCase = new ListMedicineUseCase(repositoryMedicine);
 
       const listMedicine = await useCase.execute(patientId);
 
-      res.json({ medicines: listMedicine });
+      res.status(200).json({ status: 'success', medicines: listMedicine });
       return;
 
     } catch (e) {
@@ -204,12 +153,9 @@ class MedicineController {
       res.status(200).json({
         id: response.id,
         name: response.name,
-        color: response.color,
         patientId: response.patientId,
-        initialDate: response.initialDate,
-        intervalInHour: response.intervalInHour,
-        dosage: response.dosage,
-        dosageType: DosageType[response.dosageType]
+        interval: response.interval,
+        dosage: response.dosage
       });
     } catch (e) {
       const error = e as { message: string };
@@ -221,12 +167,12 @@ class MedicineController {
 
   async edit(req: Request, res: Response) {
     try {
-      const { name, color, initialDate, intervalInHour, dosage, dosageType } = req.body;
+      const { name, interval, dosage } = req.body;
       const { medicineId } = req.params;
       const repositoryMedicine = new MedicineRepository();
       const editUseCase = new EditMedicineUseCase(repositoryMedicine);
 
-      await editUseCase.execute(medicineId, { name, color, initialDate, intervalInHour, dosage, dosageType })
+      await editUseCase.execute(medicineId, { name, interval, dosage })
 
       res.json({ status: 200, messenger: "Medicine edited" });
       return;

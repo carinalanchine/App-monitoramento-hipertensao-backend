@@ -1,5 +1,4 @@
 import { Medicine } from "../entities/Medicine";
-import { ICriptography } from "../interfaces/ICriptographyAdapter";
 import { IMedicineRepository } from "../interfaces/IMedicineRepository";
 
 export class CreateMedicineUseCase {
@@ -7,12 +6,12 @@ export class CreateMedicineUseCase {
     private medicineRepository: IMedicineRepository,
   ) { }
 
-  async execute(medicine: Omit<Medicine, "id"|"createdAt"|"updatedAt">) {
+  async execute(medicine: Omit<Medicine, "id" | "createdAt" | "updatedAt">) {
     const medicineCreated = await this.medicineRepository.createMedicine({
       ...medicine
     });
 
-    if (!medicineCreated) throw new Error("Medicine not registered");
+    if (!medicineCreated) throw new Error("Medicine not created");
 
     return { id: medicineCreated.id };
   }

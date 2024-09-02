@@ -10,7 +10,7 @@ export function authorizationAdmin(
 
     if (!user) throw new Error("Usuário não encontrado");
 
-    if (user.role !== "ADMINISTRADOR")
+    if (user.role !== "HEALTH_AGENT")
       throw new Error("Usuário não é administrador");
 
     next();

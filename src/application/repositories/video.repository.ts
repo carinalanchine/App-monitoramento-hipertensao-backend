@@ -5,7 +5,7 @@ import { prisma } from "../../infra/db/prisma";
 class VideoRepository implements IVideoRepository {
   async createVideo({ title, url, hospitalId }: CreateVideoInput): Promise<{ id: string } | null> {
     try {
-      const videoCreated = await prisma.listVideo.create({
+      const videoCreated = await prisma.videos.create({
         data: {
           title,
           url,
@@ -23,7 +23,7 @@ class VideoRepository implements IVideoRepository {
 
   async findVideoById(id: string): Promise<Video | null> {
     try {
-      const video = await prisma.listVideo.findUnique({
+      const video = await prisma.videos.findUnique({
         where: {
           id,
         }
@@ -42,7 +42,7 @@ class VideoRepository implements IVideoRepository {
 
   async deleteVideo(id: string) {
     try {
-      await prisma.listVideo.delete({
+      await prisma.videos.delete({
         where: {
           id,
         }
@@ -55,7 +55,7 @@ class VideoRepository implements IVideoRepository {
 
   async editVideo(id: string, video: EditVideoInput): Promise<{ id: string } | null> {
     try {
-      const updatedVideo = await prisma.listVideo.update({
+      const updatedVideo = await prisma.videos.update({
         where: { id },
         data: { ...video }
       })
@@ -71,7 +71,7 @@ class VideoRepository implements IVideoRepository {
 
   async findVideoByHospitalId(hospitalId: string): Promise<Video[]> {
     try {
-      return await prisma.listVideo.findMany({
+      return await prisma.videos.findMany({
         where: {
           hospitalId,
         }

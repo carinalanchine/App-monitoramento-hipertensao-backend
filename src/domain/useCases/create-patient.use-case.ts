@@ -9,11 +9,11 @@ export class CreatePatientUseCase {
     private criptography: ICriptography
   ) { }
 
-  async execute(patient: Omit<Omit<Patient, "id">, "role_tag">) {
+  async execute(patient: Omit<Omit<Patient, "id">, "role">) {
     const patientCreated = await this.patientRepository.createPatient({
       ...patient,
       password: this.criptography.encrypt(patient.password),
-      role_tag: RolesEnum.PATIENT,
+      role: RolesEnum.PATIENT,
     });
 
     if (!patientCreated) throw new Error("Patient not created");

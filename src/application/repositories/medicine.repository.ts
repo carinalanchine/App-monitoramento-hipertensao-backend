@@ -1,6 +1,6 @@
 import { prisma } from "../../infra/db/prisma";
-import { DosageType, Medicine } from "../../domain/entities/Medicine";
-import { MedicineTakenStatus } from "@prisma/client";
+import { Medicine } from "../../domain/entities/Medicine";
+//import { MedicineTakenStatus } from "@prisma/client";
 import { IMedicineRepository } from "../../domain/interfaces/IMedicineRepository";
 
 type CreateMedicineInput = Omit<Medicine, "id" | "createdAt" | "updatedAt">;
@@ -9,23 +9,17 @@ type EditMedicineInput = Omit<Medicine, "id" | "createdAt" | "updatedAt" | "pati
 class MedicineRepository implements IMedicineRepository {
   async createMedicine({
     name,
-    color,
-    initialDate,
-    intervalInHour,
+    interval,
     patientId,
-    dosage,
-    dosageType
+    dosage
   }: CreateMedicineInput): Promise<{ id: string } | null> {
     try {
       const medicineCreated = await prisma.medicine.create({
         data: {
           name,
-          color,
-          initialDate,
-          intervalInHour,
+          interval,
           patientId,
-          dosage,
-          dosageType
+          dosage
         }
       });
 
@@ -33,7 +27,7 @@ class MedicineRepository implements IMedicineRepository {
         id: medicineCreated.id,
       };
     } catch (error) {
-      throw new Error(`error on create medicine: ${error}`);
+      throw new Error(`Error on create medicine: ${error}`);
     }
   }
 
@@ -50,19 +44,10 @@ class MedicineRepository implements IMedicineRepository {
       }
 
       return {
-        id: medicine.id,
-        name: medicine.name,
-        color: medicine.color,
-        patientId: medicine.patientId,
-        initialDate: medicine.initialDate,
-        intervalInHour: medicine.intervalInHour,
-        dosage: medicine.dosage,
-        dosageType: DosageType[medicine.dosageType],
-        createdAt: medicine.createdAt,
-        updatedAt: medicine.updatedAt,
+        ...medicine
       };
     } catch (error) {
-      throw new Error(`error on find medicine by id: ${error}`);
+      throw new Error(`Error on find medicine by id: ${error}`);
     }
   }
 
@@ -75,23 +60,14 @@ class MedicineRepository implements IMedicineRepository {
       });
 
       return medicines.map((medicine) => ({
-        id: medicine.id,
-        name: medicine.name,
-        color: medicine.color,
-        patientId: medicine.patientId,
-        initialDate: medicine.initialDate,
-        intervalInHour: medicine.intervalInHour,
-        dosage: medicine.dosage,
-        dosageType: DosageType[medicine.dosageType],
-        createdAt: medicine.createdAt,
-        updatedAt: medicine.updatedAt,
+        ...medicine
       }));
     } catch (error) {
-      throw new Error(`error on find medicine by patient id: ${error}`);
+      throw new Error(`Error on find medicine by patient id: ${error}`);
     }
   }
 
-  async takeMedicine(medicineId: string, status: MedicineTakenStatus): Promise<{ id: string } | null> {
+  /*async takeMedicine(medicineId: string, status: MedicineTakenStatus): Promise<{ id: string } | null> {
     try {
       const medicineTaken = await prisma.medicineTaken.create({
         data: {
@@ -106,24 +82,24 @@ class MedicineRepository implements IMedicineRepository {
     } catch (error) {
       throw new Error(`error on take medicine: ${error}`);
     }
-  }
+  }*/
 
-  async deleteMedicine(medicineId: string) {
+  async deleteMedicine(id: string) {
     try {
       await prisma.medicine.delete({
         where: {
-          id: medicineId
+          id
         }
       });
     } catch (error) {
-      throw new Error(`error on delete medicine: ${error}`);
+      throw new Error(`Error on delete medicine: ${error}`);
     }
   }
 
-  async editMedicine(medicineId: string, editMedicineInput: EditMedicineInput): Promise<{ id: string } | null> {
+  async editMedicine(id: string, editMedicineInput: EditMedicineInput): Promise<{ id: string } | null> {
     try {
       const updatedMedicine = await prisma.medicine.update({
-        where: { id: medicineId },
+        where: { id },
         data: { ...editMedicineInput },
       });
 
@@ -131,7 +107,7 @@ class MedicineRepository implements IMedicineRepository {
         id: updatedMedicine.id,
       };
     } catch (error) {
-      throw new Error(`error editing medicine: ${error}`);
+      throw new Error(`Error editing medicine: ${error}`);
     }
   }
 }

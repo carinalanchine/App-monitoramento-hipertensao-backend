@@ -20,7 +20,7 @@ class PatientController {
         cpf,
         hospital_id,
         name,
-        password,
+        password
       });
 
       res.status(200).json({ status: "success", message: "Patient created", id: createPatient });

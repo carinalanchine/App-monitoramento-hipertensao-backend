@@ -1,17 +1,9 @@
-export enum DosageType {
-    "MILLIGRAMS" = "MILLIGRAMS",
-    "GRAMS" = "GRAMS",
-}
-
 export type Medicine = {
     id: string;
     name: string;
-    color: string;
     patientId: string;
-    initialDate: Date;
-    intervalInHour: number;
-    dosage: number;
-    dosageType: DosageType;
+    interval: string;
+    dosage: string;
     createdAt: Date;
     updatedAt: Date;
 };

@@ -9,7 +9,7 @@ class VideoController {
   async create(req: Request, res: Response) {
     try {
       const { title, url } = req.body;
-      const { hospitalId } = req.user;
+      const hospitalId = "17a557d6-697a-450b-b28c-bfdeca6cb23a"
       const repository = new VideoRepository();
       const useCase = new CreateVideoUseCase(repository);
 
@@ -101,13 +101,13 @@ class VideoController {
 
   async list(req: Request, res: Response) {
     try {
-      const { hospitalId } = req.user;
+      const hospitalId = "17a557d6-697a-450b-b28c-bfdeca6cb23a";
       const repository = new VideoRepository();
       const useCase = new ListVideoUseCase(repository);
 
       const listVideo = await useCase.execute(hospitalId);
 
-      res.json({ status: 200, videos: listVideo });
+      res.status(200).json({ status: "success", videos: listVideo });
 
     } catch (e) {
       const error = e as { message: string };
