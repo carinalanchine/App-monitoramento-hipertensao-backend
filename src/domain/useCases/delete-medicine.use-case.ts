@@ -8,9 +8,8 @@ export class DeleteMedicineUseCase {
   async execute(id: string) {
     const medicine = await this.medicineRepository.findMedicineById(id);
 
-    if (!medicine) {
+    if (!medicine)
       throw new Error("Medicine not found");
-    }
 
     await this.medicineRepository.deleteMedicine(id);
 

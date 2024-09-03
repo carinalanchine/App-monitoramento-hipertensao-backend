@@ -8,27 +8,37 @@ class PatientController {
     try {
       const { cpf, name, password, hospital_id } = req.body;
 
-      if (!cpf) throw new Error("CPF missing");
-      if (!name) throw new Error("Name missing");
-      if (!password) throw new Error("Password missing");
+      try {
+        if (!cpf) throw new Error("CPF missing");
+        if (!name) throw new Error("Name missing");
+        if (!password) throw new Error("Password missing");
+        if (!hospital_id) throw new Error("Hospital ID missing");
+      } catch (error) {
+        console.error(error);
+        res.status(400).json({
+          status: "error",
+          message: "Dados incompletos"
+        });
+      }
 
       const repository = new PatientRepository();
       const criptography = new CriptographyAdapter();
       const useCase = new CreatePatientUseCase(repository, criptography);
 
-      const createPatient = await useCase.execute({
-        cpf,
-        hospital_id,
-        name,
-        password
-      });
+      const createPatient = await useCase.execute({ cpf, hospital_id, name, password });
 
-      res.status(200).json({ status: "success", message: "Patient created", id: createPatient });
-    } catch (e) {
-      const error = e as { message: string };
-      res.status(400).json({
+      if (!createPatient)
+        throw new Error("Erro ao criar paciente");
+
+      res.status(201).json({
+        status: "success",
+        message: "Paciente cadastrado"
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({
         status: "error",
-        message: error.message,
+        message: "Paciente não cadastrado"
       });
     }
   }

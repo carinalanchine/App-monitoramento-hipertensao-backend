@@ -20,10 +20,11 @@ export function authenticateToken(
 
     const decoded = jwt.verify(tokenValue, jwtSecret);
 
-    req.user = decoded as { userId: string; cpf: string; role: string, hospitalId: string };
+    req.user = decoded as { user_id: string; cpf: string; role: string, hospital_id: string };
 
     next();
   } catch (error) {
+    console.error(error);
     return res.status(403).json({ status: "error", message: "Token inválido" });
   }
 }

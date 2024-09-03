@@ -1,13 +1,7 @@
 import { ICriptography } from "../interfaces/ICriptographyAdapter";
 import { IHealthAgentRepository } from "../interfaces/IHealthAgentRepository";
 import { RolesEnum } from "../entities/Role";
-
-type CreateHealthAgentUseCaseInput = {
-  name: string;
-  cpf: string;
-  password: string;
-  hospitalID: string;
-};
+import { HealthAgent } from "../entities/HealthAgent";
 
 export class CreateHealthAgentUseCase {
   constructor(
@@ -15,26 +9,18 @@ export class CreateHealthAgentUseCase {
     private criptography: ICriptography
   ) { }
 
-  async execute(body: CreateHealthAgentUseCaseInput) {
-    const { name, cpf, password, hospitalID } = body;
+  async execute(agent: Omit<Omit<HealthAgent, "id">, "role">) {
+    const encryptedPassword = this.criptography.encrypt(agent.password);
 
-    if (!name) throw new Error("name is required");
-    if (!hospitalID) throw new Error("hospital ID is required");
-    if (!cpf) throw new Error("cpf is required");
-    if (!password) throw new Error("password is required");
+    const agentCreated = await this.healthAgentRepository.createHealthAgent({
+      ...agent,
+      password: encryptedPassword,
+      role: RolesEnum.HEALTH_AGENT
+    });
 
-    const encryptedPassword = this.criptography.encrypt(password);
+    if (!agentCreated)
+      throw new Error("Health agent not created");
 
-    const user = await this.healthAgentRepository.create(
-      name,
-      cpf,
-      encryptedPassword,
-      RolesEnum.HEALTH_AGENT,
-      hospitalID
-    );
-
-    if (!user) throw new Error("error on doctor registration");
-
-    return user;
+    return agentCreated.id;
   }
 }

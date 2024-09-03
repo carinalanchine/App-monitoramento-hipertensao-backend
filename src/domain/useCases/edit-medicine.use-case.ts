@@ -1,23 +1,17 @@
 import { Medicine } from "../entities/Medicine";
-import { ICriptography } from "../interfaces/ICriptographyAdapter";
-import { IMedicineRepository, EditMedicineInput } from "../interfaces/IMedicineRepository";
+import { IMedicineRepository } from "../interfaces/IMedicineRepository";
 
 export class EditMedicineUseCase {
   constructor(
     private medicineRepository: IMedicineRepository,
   ) { }
 
-  async execute(
-        medicineId: string,
-        medicine: EditMedicineInput,
-    ) {
-    const medicineEditedId = await this.medicineRepository.editMedicine(
-        medicineId,
-        medicine
-    );
+  async execute(id: string, medicine: Omit<Medicine, "id" | "patient_id">) {
+    const medicineEdited = await this.medicineRepository.editMedicine(id, medicine);
 
-    if (!medicineEditedId) throw new Error("Medicine not edited");
+    if (!medicineEdited)
+      throw new Error("Medicine not edited");
 
-    return { id: medicineEditedId.id };
+    return medicineEdited.id;
   }
 }

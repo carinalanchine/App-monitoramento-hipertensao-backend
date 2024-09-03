@@ -18,13 +18,15 @@ export class LoginUseCase {
 
     const user = await this.userRepository.findByCpf(cpf);
 
-    if (!user) throw new Error("User not found");
+    if (!user)
+      throw new Error("User not found");
 
     const validPassword = this.criptography.compare(password, user.password);
 
-    if (!validPassword) throw new Error("Invalid password");
+    if (!validPassword)
+      throw new Error("Invalid password");
 
-    const token = this.generateToken(user.id, user.cpf, user.role_tag, user.hospital_id)
+    const token = this.generateToken(user.id, user.cpf, user.role, user.hospital_id)
 
     return { user, token };
   }
@@ -32,13 +34,10 @@ export class LoginUseCase {
   generateToken(userId: string, cpf: string, role: string, hospitalId: string) {
     const jwtSecret = process.env.JWT_SECRET;
 
-    if (!jwtSecret) {
+    if (!jwtSecret)
       throw new Error("JWT_SECRET não definido");
-    }
 
-    const token = jwt.sign({ userId, cpf, role, hospitalId }, jwtSecret, {
-      expiresIn: "1h",
-    });
+    const token = jwt.sign({ userId, cpf, role, hospitalId }, jwtSecret, { expiresIn: "1h", });
 
     return token;
   }

@@ -6,13 +6,12 @@ export class CreateMedicineUseCase {
     private medicineRepository: IMedicineRepository,
   ) { }
 
-  async execute(medicine: Omit<Medicine, "id" | "createdAt" | "updatedAt">) {
-    const medicineCreated = await this.medicineRepository.createMedicine({
-      ...medicine
-    });
+  async execute(medicine: Omit<Medicine, "id">) {
+    const medicineCreated = await this.medicineRepository.createMedicine({ ...medicine });
 
-    if (!medicineCreated) throw new Error("Medicine not created");
+    if (!medicineCreated)
+      throw new Error("Medicine not created");
 
-    return { id: medicineCreated.id };
+    return medicineCreated.id;
   }
 }

@@ -1,39 +1,109 @@
 import { Request, Response } from "express";
 import MedicineRepository from "../repositories/medicine.repository";
-//import { DosageType } from "../../domain/entities/Medicine";
 import { CreateMedicineUseCase } from "../../domain/useCases/create-medicine.use-case";
 import { TakeMedicineUseCase } from "../../domain/useCases/take-medicine.use-case";
 import { DeleteMedicineUseCase } from "../../domain/useCases/delete-medicine.use-case";
 import { ListMedicineUseCase } from "../../domain/useCases/list-medicine.use-case";
-import { FindMedicineUseCase } from "../../domain/useCases/find-medicine.use-case";
 import { EditMedicineUseCase } from "../../domain/useCases/edit-medicine.use-case";
 
 class MedicineController {
+
   async create(req: Request, res: Response) {
     try {
-      const { name, patientId, interval, dosage } = req.body;
+      const { title, patient_id, interval, dosage } = req.body;
 
-      if (!name) throw new Error("Name missing");
-      if (!patientId) throw new Error("Patient ID missing");
-      if (!interval) throw new Error("Interval missing");
-      if (!dosage) throw new Error("Dosage missing");
+      try {
+        if (!title) throw new Error("Name missing");
+        if (!patient_id) throw new Error("Patient ID missing");
+        if (!interval) throw new Error("Interval missing");
+        if (!dosage) throw new Error("Dosage missing");
+      } catch (error) {
+        res.status(400).json({
+          status: "error",
+          message: "Dados incompletos"
+        });
+      }
 
       const repository = new MedicineRepository();
       const useCase = new CreateMedicineUseCase(repository);
 
-      const createMedicine = await useCase.execute({
-        name,
-        patientId,
-        interval,
-        dosage,
-      });
+      const createMedicine = await useCase.execute({ title, patient_id, interval, dosage });
 
-      if (!createMedicine) throw new Error("Medicine not created");
+      if (!createMedicine)
+        throw new Error("Medicine not created");
+
+      res.status(201).json({
+        status: "success",
+        message: "Remédio cadastrado com sucesso"
+      });
+    } catch (e) {
+      const error = e as { message: string };
+      res.status(400).json({
+        status: "error",
+        message: error.message,
+      });
+    }
+  }
+
+  async delete(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+
+      try {
+        if (!id) throw new Error("ID missing");
+      } catch (error) {
+        res.status(400).json({
+          status: 400,
+          message: "medicineId missing",
+        });
+      }
+
+      const repository = new MedicineRepository();
+      const useCase = new DeleteMedicineUseCase(repository);
+
+      const deleteMedicine = await useCase.execute(id);
+
+      if (!deleteMedicine.success)
+        throw new Error("Remédio não deletado");
 
       res.status(200).json({
         status: "success",
-        message: "Medicine created",
-        id: createMedicine.id
+        message: "Remédio excluído com sucesso"
+      });
+    } catch (e) {
+      const error = e as { message: string };
+      res.status(400).json({
+        status: 400,
+        message: error.message,
+      });
+    }
+  }
+
+  async edit(req: Request, res: Response) {
+    try {
+      const { title, interval, dosage } = req.body;
+      const { id } = req.params;
+
+      try {
+        if (!title) throw new Error("Title missing");
+        if (!interval) throw new Error("Inteval missing");
+        if (!dosage) throw new Error("Dosage missing");
+        if (!id) throw new Error("Medicine ID missing");
+      } catch (e) {
+        console.error(e);
+      }
+
+      const repository = new MedicineRepository();
+      const useCase = new EditMedicineUseCase(repository);
+
+      const editedMedicine = await useCase.execute(id, { title, interval, dosage });
+
+      if (!editedMedicine)
+        throw new Error("Remédio não editado");
+
+      res.status(200).json({
+        status: "success",
+        messenger: "Remédio editado"
       });
     } catch (e) {
       const error = e as { message: string };
@@ -46,76 +116,33 @@ class MedicineController {
 
   async take(req: Request, res: Response) {
     try {
-      const { medicineId, status } = req.body;
-      const repositoryMedicine = new MedicineRepository();
-      const useCase = new TakeMedicineUseCase(repositoryMedicine);
+      const { medicine_id, status } = req.body;
 
-      if (!medicineId) {
-        res.status(400).json({
-          status: 400,
-          messenger: "medicineId missing",
-        });
-        return;
+      try {
+        if (!medicine_id) throw new Error("Medicine ID missing");
+        if (!status) throw new Error("Status missing");
+      } catch (e) {
+        console.error(e);
       }
 
-      if (!status) {
-        res.status(400).json({
-          status: 400,
-          messenger: "status missing",
-        });
-        return;
-      }
+      const repository = new MedicineRepository();
+      const useCase = new TakeMedicineUseCase(repository);
 
-      const medicineWasTaken = await useCase.execute({
-        medicineId,
-        status,
+      const medicineWasTaken = await useCase.execute({ medicine_id, status });
+
+      if (!medicineWasTaken)
+        throw new Error("Erro ao cadastrar remédio tomado");
+
+      res.status(200).json({
+        status: "success",
+        message: "Status do remédio cadastrado"
       });
-
-      if (!medicineWasTaken) {
-        res.status(400).json({
-          status: 400,
-          messenger: "Medicine not taken",
-        });
-        return;
-      }
-
-      res.json({ status: 200, messenger: "Medicine taken" });
-      return;
     } catch (e) {
       const error = e as { message: string };
       res.status(400).json({
         status: 400,
         message: error.message,
       });
-      return;
-    }
-  }
-
-  async delete(req: Request, res: Response) {
-    try {
-      const { id } = req.params;
-      const repositoryMedicine = new MedicineRepository();
-      const useCase = new DeleteMedicineUseCase(repositoryMedicine);
-
-      if (!id) {
-        res.status(400).json({
-          status: 400,
-          messenger: "medicineId missing",
-        });
-        return;
-      }
-
-      await useCase.execute(id);
-
-      res.json({ status: 200, messenger: "Medicine deleted" });
-      return;
-    } catch (e) {
-      const error = e as { message: string };
-      res.status(400).json({
-        status: 400,
-        message: error.message,
-      });
-      return;
     }
   }
 
@@ -123,66 +150,30 @@ class MedicineController {
     try {
       const { patientId } = req.params;
 
-      const repositoryMedicine = new MedicineRepository();
-      const useCase = new ListMedicineUseCase(repositoryMedicine);
-
-      const listMedicine = await useCase.execute(patientId);
-
-      res.status(200).json({ status: 'success', medicines: listMedicine });
-      return;
-
-    } catch (e) {
-      const error = e as { message: string };
-      res.status(400).json({
-        status: 400,
-        message: error.message,
-      });
-      return;
-    }
-  }
-
-  async findByID(req: Request, res: Response) {
-    try {
-      const { medicineId } = req.body;
+      try {
+        if (patientId) throw new Error("Patient ID missing");
+      } catch (e) {
+        console.error(e);
+      }
 
       const repository = new MedicineRepository();
-      const useCase = new FindMedicineUseCase(repository);
+      const useCase = new ListMedicineUseCase(repository);
 
-      const response = await useCase.execute(medicineId);
+      const listMedicines = await useCase.execute(patientId);
+
+      if (!listMedicines)
+        throw new Error("Lista de remédios não recuperada");
 
       res.status(200).json({
-        id: response.id,
-        name: response.name,
-        patientId: response.patientId,
-        interval: response.interval,
-        dosage: response.dosage
+        status: 'success',
+        medicines: listMedicines
       });
-    } catch (e) {
-      const error = e as { message: string };
-      res.status(400).json({
-        message: error.message,
-      });
-    }
-  }
-
-  async edit(req: Request, res: Response) {
-    try {
-      const { name, interval, dosage } = req.body;
-      const { medicineId } = req.params;
-      const repositoryMedicine = new MedicineRepository();
-      const editUseCase = new EditMedicineUseCase(repositoryMedicine);
-
-      await editUseCase.execute(medicineId, { name, interval, dosage })
-
-      res.json({ status: 200, messenger: "Medicine edited" });
-      return;
     } catch (e) {
       const error = e as { message: string };
       res.status(400).json({
         status: 400,
         message: error.message,
       });
-      return;
     }
   }
 }

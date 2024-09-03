@@ -1,16 +1,14 @@
 import { prisma } from "../../infra/db/prisma";
 import { Patient } from "../../domain/entities/Patient";
 
-type CreatePatientInput = Omit<Patient, "id">;
-
 class PatientRepository {
   async createPatient({
     cpf,
     hospital_id,
     name,
     password,
-    role,
-  }: CreatePatientInput): Promise<{ id: string } | null> {
+    role
+  }: Omit<Patient, "id">): Promise<{ id: string } | null> {
     try {
       const userCreated = await prisma.user.create({
         data: {
@@ -22,11 +20,14 @@ class PatientRepository {
         }
       });
 
+      if (!userCreated)
+        return null;
+
       return {
         id: userCreated.id,
       };
     } catch (error) {
-      throw new Error(`error on create patient: ${error}`);
+      throw new Error(`Error on create patient: ${error}`);
     }
   }
 }

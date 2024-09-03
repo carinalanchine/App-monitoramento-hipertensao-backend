@@ -1,4 +1,4 @@
-import { Request, Response, Router } from "express";
+import { Router } from "express";
 import healthAgentController from "../../application/controllers/health-agent.controller";
 import { authorizationAdmin } from "../middleware/admin.middleware";
 import { authenticateToken } from "../middleware/auth.middleware";

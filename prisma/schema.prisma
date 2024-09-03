@@ -13,19 +13,25 @@ enum Role {
   HEALTH_AGENT
 }
 
+enum MedicineTakenStatus {
+  TAKEN
+  NOT_TAKEN
+  TAKEN_LATE
+}
+
 model Hospital {
   id         String   @id @default(uuid())
   name       String   @unique
   users      User[]
-  listVideos Videos[]
-  listTips   Tips[]
+  listVideos Video[]
+  listTips   Tip[]
   createdAt  DateTime @default(now()) @map("created_at")
   updatedAt  DateTime @updatedAt @map("updated_at")
 
   @@map("hospital")
 }
 
-model Videos {
+model Video {
   id         String   @id @default(uuid())
   title      String
   url        String
@@ -37,7 +43,7 @@ model Videos {
   @@map("videos")
 }
 
-model Tips {
+model Tip {
   id         String   @id @default(uuid())
   tip        String
   hospital   Hospital @relation(fields: [hospitalId], references: [id])
@@ -57,7 +63,7 @@ model User {
   hospital      Hospital        @relation(fields: [hospitalId], references: [id])
   hospitalId    String          @map("hospital_id")
   bloodPressure BloodPressure[]
-  medicine      Medicine[]
+  medicines     Medicine[]
   createdAt     DateTime        @default(now()) @map("created_at")
   updatedAt     DateTime        @updatedAt @map("updated_at")
 
@@ -65,16 +71,28 @@ model User {
 }
 
 model Medicine {
-  id        String   @id @default(uuid())
-  name      String
-  patient   User     @relation(fields: [patientId], references: [id])
-  patientId String   @map("patient_id")
-  interval  String
-  dosage    String
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id            String          @id @default(uuid())
+  title         String
+  patient       User            @relation(fields: [patientId], references: [id])
+  patientId     String          @map("patient_id")
+  interval      String
+  dosage        String
+  medicineTaken MedicineTaken[]
+  createdAt     DateTime        @default(now()) @map("created_at")
+  updatedAt     DateTime        @updatedAt @map("updated_at")
 
   @@map("medicines")
+}
+
+model MedicineTaken {
+  id         String              @id @default(uuid())
+  medicine   Medicine            @relation(fields: [medicineId], references: [id])
+  medicineId String              @map("medicine_id")
+  status     MedicineTakenStatus
+  createdAt  DateTime            @default(now()) @map("created_at")
+  updatedAt  DateTime            @updatedAt @map("updated_at")
+
+  @@map("medicine-taken")
 }
 
 model BloodPressure {

@@ -9,25 +9,10 @@ class VideoController {
   async create(req: Request, res: Response) {
     try {
       const { title, url } = req.body;
-      const hospitalId = "17a557d6-697a-450b-b28c-bfdeca6cb23a"
+      const hospitalId = req.user.hospital_id;
+
       const repository = new VideoRepository();
       const useCase = new CreateVideoUseCase(repository);
-
-      if (!title) {
-        res.status(400).json({
-          status: 400,
-          messenger: "title missing",
-        });
-        return;
-      }
-
-      if (!url) {
-        res.status(400).json({
-          status: 400,
-          messenger: "url missing",
-        });
-        return;
-      }
 
       const createdVideo = await useCase.execute({ title, url, hospitalId });
 

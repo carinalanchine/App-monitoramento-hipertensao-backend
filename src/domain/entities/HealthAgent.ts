@@ -4,7 +4,7 @@ export type HealthAgent = {
   id: string;
   cpf: string;
   name: string;
-  role_tag: RolesEnum;
+  role: RolesEnum;
   password: string;
   hospital_id: string;
 };

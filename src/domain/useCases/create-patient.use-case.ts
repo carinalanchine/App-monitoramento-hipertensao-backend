@@ -10,13 +10,16 @@ export class CreatePatientUseCase {
   ) { }
 
   async execute(patient: Omit<Omit<Patient, "id">, "role">) {
+    const encryptedPassword = this.criptography.encrypt(patient.password);
+
     const patientCreated = await this.patientRepository.createPatient({
       ...patient,
-      password: this.criptography.encrypt(patient.password),
-      role: RolesEnum.PATIENT,
+      password: encryptedPassword,
+      role: RolesEnum.PATIENT
     });
 
-    if (!patientCreated) throw new Error("Patient not created");
+    if (!patientCreated)
+      throw new Error("Patient not created");
 
     return patientCreated.id;
   }

@@ -1,15 +1,13 @@
-//import { MedicineTakenStatus } from "@prisma/client";
-import { Medicine } from "../entities/Medicine";
+import { Medicine, MedicineTakenStatus } from "../entities/Medicine";
 
-export type CreateMedicineInput = Omit<Medicine, "id" | "createdAt" | "updatedAt">;
-export type EditMedicineInput = Omit<Medicine, "id" | "createdAt" | "updatedAt" | "patientId">;
+type CreateMedicineInput = Omit<Medicine, "id">;
+type EditMedicineInput = Omit<Medicine, "id" | "patient_id">;
 
 export interface IMedicineRepository {
   createMedicine(medicine: CreateMedicineInput): Promise<{ id: string } | null>;
   findMedicineById(id: string): Promise<Medicine | null>;
   findMedicineByPatientId(patientId: string): Promise<Medicine[]>;
-  //takeMedicine(medicineId: string, status: MedicineTakenStatus): Promise<{ id: string } | null>;
-  deleteMedicine(medicineId: string): Promise<void>;
-  editMedicine(medicineId: string, editMedicineInput: EditMedicineInput): Promise<{ id: string } | null>;
+  deleteMedicine(id: string): Promise<void>;
+  editMedicine(id: string, medicine: EditMedicineInput): Promise<{ id: string } | null>;
+  takeMedicine(medicine_id: string, status: MedicineTakenStatus): Promise<{ id: string } | null>;
 }
-

@@ -1,5 +1,5 @@
-
+import { BloodPressure } from "../entities/BloodPressure";
 
 export interface IBloodPressureRepository {
-    createBloodPressure( patientId: string, systolic: number, diastolic: number): Promise<{ id: string } | null>;
+  createBloodPressure(pressure: Omit<BloodPressure, "id">): Promise<{ id: string } | null>;
 }

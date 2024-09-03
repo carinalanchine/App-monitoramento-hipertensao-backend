@@ -5,37 +5,31 @@ import { CreateBloodPressureUseCase } from "../../domain/useCases/blood-pressure
 class BloodPressureController {
   async create(req: Request, res: Response) {
     try {
-      const { patientId, systolic, diastolic } = req.body;
-      const repositoryBloodPressure = new BloodPressureRepository();
-      const useCase = new CreateBloodPressureUseCase(repositoryBloodPressure);
+      const { patient_id, systolic, diastolic } = req.body;
 
-      if (!patientId) {
+      try {
+        if (!patient_id) throw new Error("Patient ID is required");
+        if (!systolic) throw new Error("Systolic measurement is required");
+        if (!diastolic) throw new Error("Diastolic measurement is required");
+      } catch (error) {
+        console.error(error);
         res.status(400).json({
-          status: 400,
-          messenger: "patient id missing",
+          status: "error",
+          message: "Dados incompletos"
         });
-        return;
-      }
-      if (!systolic) {
-        res.status(400).json({
-          status: 400,
-          messenger: "systolic missing",
-        });
-        return;
-      }
-      if (!diastolic) {
-        res.status(400).json({
-          status: 400,
-          messenger: "diastolic missing",
-        });
-        return;
       }
 
-      const response = await useCase.execute({ patientId, systolic, diastolic });
+      const repository = new BloodPressureRepository();
+      const useCase = new CreateBloodPressureUseCase(repository);
+
+      const createPressure = await useCase.execute({ patient_id, systolic, diastolic });
+
+      if (!createPressure)
+        throw new Error("Erro ao registrar pressão");
 
       res.status(201).json({
         status: "success",
-        id: response.id,
+        message: "Pressão cadastrada com sucesso"
       });
     } catch (e) {
       const error = e as { message: string };

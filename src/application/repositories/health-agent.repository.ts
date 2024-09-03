@@ -1,26 +1,36 @@
-import { RolesEnum } from "../../domain/entities/Role";
+import { HealthAgent } from "../../domain/entities/HealthAgent";
 import { prisma } from "../../infra/db/prisma";
 
 class HealthAgentRepository {
-    async create(name: string, cpf: string, password: string, roleID: RolesEnum, hospitalID: string) {
-        try {
-            const response = await prisma.user.create({
-                data: {
-                    name: name,
-                    cpf: cpf,
-                    role_tag: roleID,
-                    hospital_id: hospitalID,
-                    password: password
-                }
-            });
-            return {
-                id: response.id,
-            }
-
-        } catch (error) {
-            throw new Error("error on create health agent");
+  async createHealthAgent({
+    name,
+    cpf,
+    hospital_id,
+    password,
+    role
+  }: Omit<HealthAgent, "id">): Promise<{ id: string } | null> {
+    try {
+      const agentCreated = await prisma.user.create({
+        data: {
+          name,
+          cpf,
+          role,
+          hospitalId: hospital_id,
+          password
         }
+      });
+
+      if (!agentCreated)
+        return null;
+
+      return {
+        id: agentCreated.id
+      }
+
+    } catch (error) {
+      throw new Error("Error on create health agent");
     }
+  }
 }
 
 export default HealthAgentRepository;

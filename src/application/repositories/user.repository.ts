@@ -12,22 +12,19 @@ class UserRepository implements IUserRepository {
         },
       });
 
-      if (!user) {
+      if (!user)
         return null;
-      }
 
       return {
         cpf: user.cpf,
         id: user.id,
-        hospital_id: user.hospital_id,
         name: user.name,
-        password: user.password,
-        role_tag: RolesEnum[user.role_tag as keyof typeof RolesEnum],
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt,
+        role: RolesEnum[user.role as keyof typeof RolesEnum],
+        hospital_id: user.hospitalId,
+        password: user.password
       }
     } catch (error) {
-      throw new Error("error on get user by cpf");
+      throw new Error("Error on get user by CPF");
     }
   }
 }
