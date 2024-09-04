@@ -5,24 +5,10 @@ export class ListVideoUseCase {
     private videoRepository: IVideoRepository,
   ) { }
 
-  async execute(hospitalId: string) {
-    try {
-      const videos = await this.videoRepository.findVideoByHospitalId(hospitalId);
+  async execute(hospital_id: string) {
+    const videos = await this.videoRepository.findVideoByHospitalId(hospital_id);
+    const total = videos.length;
 
-      if (!videos.length) {
-        throw new Error("No videos found");
-      }
-
-      return videos.map(video => ({
-        id: video.id,
-        title: video.title,
-        url: video.url,
-        hospitalId: video.hospitalId,
-      }));
-
-    } catch (error) {
-      throw new Error(`error on list video: ${error}`);
-    }
-
+    return { videos, total };
   }
 }

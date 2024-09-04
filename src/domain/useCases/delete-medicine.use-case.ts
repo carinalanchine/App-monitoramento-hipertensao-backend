@@ -1,3 +1,4 @@
+import HttpError from "../../infra/exceptions/httpError";
 import { IMedicineRepository } from "../interfaces/IMedicineRepository";
 
 export class DeleteMedicineUseCase {
@@ -9,10 +10,8 @@ export class DeleteMedicineUseCase {
     const medicine = await this.medicineRepository.findMedicineById(id);
 
     if (!medicine)
-      throw new Error("Medicine not found");
+      throw new HttpError("Remédio não encontrado", 404);
 
     await this.medicineRepository.deleteMedicine(id);
-
-    return { success: true };
   }
 }

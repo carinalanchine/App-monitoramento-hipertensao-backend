@@ -1,17 +1,17 @@
-import { Medicine } from "../entities/Medicine";
-import { IMedicineRepository } from "../interfaces/IMedicineRepository";
+import HttpError from "../../infra/exceptions/httpError";
+import { CreateMedicineInput, IMedicineRepository } from "../interfaces/IMedicineRepository";
 
 export class CreateMedicineUseCase {
   constructor(
     private medicineRepository: IMedicineRepository,
   ) { }
 
-  async execute(medicine: Omit<Medicine, "id">) {
+  async execute(medicine: CreateMedicineInput) {
     const medicineCreated = await this.medicineRepository.createMedicine({ ...medicine });
 
     if (!medicineCreated)
-      throw new Error("Medicine not created");
+      throw new HttpError("Remédio não criado", 500);
 
-    return medicineCreated.id;
+    return { id: medicineCreated.id };
   }
 }

@@ -1,11 +1,12 @@
 import { HealthAgent } from "../../domain/entities/HealthAgent";
+import HttpError from "../../infra/exceptions/httpError";
 import { prisma } from "../../infra/db/prisma";
 
 class HealthAgentRepository {
   async createHealthAgent({
     name,
     cpf,
-    hospital_id,
+    hospitalId,
     password,
     role
   }: Omit<HealthAgent, "id">): Promise<{ id: string } | null> {
@@ -15,7 +16,7 @@ class HealthAgentRepository {
           name,
           cpf,
           role,
-          hospitalId: hospital_id,
+          hospitalId,
           password
         }
       });
@@ -28,7 +29,7 @@ class HealthAgentRepository {
       }
 
     } catch (error) {
-      throw new Error("Error on create health agent");
+      throw new HttpError("Error on create health agent", 500);
     }
   }
 }

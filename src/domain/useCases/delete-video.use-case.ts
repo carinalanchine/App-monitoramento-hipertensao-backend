@@ -1,3 +1,4 @@
+import HttpError from "../../infra/exceptions/httpError";
 import { IVideoRepository } from "../interfaces/IVideoRepository";
 
 export class DeleteVideoUseCase {
@@ -8,12 +9,9 @@ export class DeleteVideoUseCase {
   async execute(videoId: string) {
     const video = await this.videoRepository.findVideoById(videoId);
 
-    if (!video) {
-      throw new Error("Video not found");
-    }
+    if (!video)
+      throw new HttpError("Video não encontrado", 404);
 
     await this.videoRepository.deleteVideo(videoId);
-
-    return { success: true };
   }
 }

@@ -2,6 +2,7 @@ import { prisma } from "../../infra/db/prisma";
 import { Medicine } from "../../domain/entities/Medicine";
 import { MedicineTakenStatus } from "@prisma/client";
 import { IMedicineRepository } from "../../domain/interfaces/IMedicineRepository";
+import HttpError from "../../infra/exceptions/httpError";
 
 type EditMedicineInput = Omit<Medicine, "id" | "createdAt" | "updatedAt" | "patientId">;
 
@@ -9,7 +10,7 @@ class MedicineRepository implements IMedicineRepository {
   async createMedicine({
     title,
     interval,
-    patient_id,
+    patientId,
     dosage
   }: Omit<Medicine, "id">): Promise<{ id: string } | null> {
     try {
@@ -17,7 +18,7 @@ class MedicineRepository implements IMedicineRepository {
         data: {
           title,
           interval,
-          patientId: patient_id,
+          patientId,
           dosage
         }
       });
@@ -29,7 +30,7 @@ class MedicineRepository implements IMedicineRepository {
         id: medicineCreated.id,
       };
     } catch (error) {
-      throw new Error(`Error on create medicine: ${error}`);
+      throw new HttpError("Error on create medicine", 500);
     }
   }
 
@@ -45,11 +46,14 @@ class MedicineRepository implements IMedicineRepository {
         return null;
 
       return {
-        ...medicine,
-        patient_id: medicine.patientId
+        id: medicine.id,
+        title: medicine.title,
+        interval: medicine.interval,
+        dosage: medicine.dosage,
+        patientId: medicine.patientId
       };
     } catch (error) {
-      throw new Error(`Error on find medicine by id: ${error}`);
+      throw new HttpError("Error on find medicine by ID", 500);
     }
   }
 
@@ -62,11 +66,14 @@ class MedicineRepository implements IMedicineRepository {
       });
 
       return medicines.map((medicine) => ({
-        ...medicine,
-        patient_id: patientId
+        id: medicine.id,
+        title: medicine.title,
+        interval: medicine.interval,
+        dosage: medicine.dosage,
+        patientId: medicine.patientId
       }));
     } catch (error) {
-      throw new Error(`Error on find medicine by patient id: ${error}`);
+      throw new HttpError("Error on find medicine by patient ID", 500);
     }
   }
 
@@ -78,7 +85,7 @@ class MedicineRepository implements IMedicineRepository {
         }
       });
     } catch (error) {
-      throw new Error(`Error on delete medicine: ${error}`);
+      throw new HttpError("Error on delete medicine", 500);
     }
   }
 
@@ -96,15 +103,15 @@ class MedicineRepository implements IMedicineRepository {
         id: updatedMedicine.id,
       };
     } catch (error) {
-      throw new Error(`Error editing medicine: ${error}`);
+      throw new HttpError("Error on edit medicine", 500);
     }
   }
 
-  async takeMedicine(medicine_id: string, status: MedicineTakenStatus): Promise<{ id: string } | null> {
+  async takeMedicine(medicineId: string, status: MedicineTakenStatus): Promise<{ id: string } | null> {
     try {
       const medicineTaken = await prisma.medicineTaken.create({
         data: {
-          medicineId: medicine_id,
+          medicineId,
           status
         }
       });
@@ -116,7 +123,7 @@ class MedicineRepository implements IMedicineRepository {
         id: medicineTaken.id,
       };
     } catch (error) {
-      throw new Error(`Error on take medicine: ${error}`);
+      throw new HttpError("Error on take medicine", 500);
     }
   }
 }

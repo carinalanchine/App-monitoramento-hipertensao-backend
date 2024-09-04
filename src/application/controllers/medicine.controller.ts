@@ -5,43 +5,41 @@ import { TakeMedicineUseCase } from "../../domain/useCases/take-medicine.use-cas
 import { DeleteMedicineUseCase } from "../../domain/useCases/delete-medicine.use-case";
 import { ListMedicineUseCase } from "../../domain/useCases/list-medicine.use-case";
 import { EditMedicineUseCase } from "../../domain/useCases/edit-medicine.use-case";
+import HttpError from "../../infra/exceptions/httpError";
 
 class MedicineController {
 
   async create(req: Request, res: Response) {
     try {
-      const { title, patient_id, interval, dosage } = req.body;
+      const { title, patientId, interval, dosage } = req.body;
 
-      try {
-        if (!title) throw new Error("Name missing");
-        if (!patient_id) throw new Error("Patient ID missing");
-        if (!interval) throw new Error("Interval missing");
-        if (!dosage) throw new Error("Dosage missing");
-      } catch (error) {
-        res.status(400).json({
-          status: "error",
-          message: "Dados incompletos"
-        });
-      }
+      if (!title) throw new HttpError("Title is required", 400);
+      if (!patientId) throw new HttpError("Patient ID is required", 400);
+      if (!interval) throw new HttpError("Interval is required", 400);
+      if (!dosage) throw new HttpError("Dosage is required", 400);
 
       const repository = new MedicineRepository();
       const useCase = new CreateMedicineUseCase(repository);
 
-      const createMedicine = await useCase.execute({ title, patient_id, interval, dosage });
-
-      if (!createMedicine)
-        throw new Error("Medicine not created");
+      await useCase.execute({ title, patientId, interval, dosage });
 
       res.status(201).json({
         status: "success",
         message: "Remédio cadastrado com sucesso"
       });
-    } catch (e) {
-      const error = e as { message: string };
-      res.status(400).json({
-        status: "error",
-        message: error.message,
-      });
+    } catch (error) {
+      if (error instanceof HttpError) {
+        res.status(error.statusCode).json({
+          status: "error",
+          message: error.message
+        });
+      }
+
+      else
+        res.status(500).json({
+          status: "error",
+          message: "Erro ao cadastrar remédio"
+        });
     }
   }
 
@@ -49,33 +47,30 @@ class MedicineController {
     try {
       const { id } = req.params;
 
-      try {
-        if (!id) throw new Error("ID missing");
-      } catch (error) {
-        res.status(400).json({
-          status: 400,
-          message: "medicineId missing",
-        });
-      }
+      if (!id) throw new HttpError("Medicine ID is required", 400);
 
       const repository = new MedicineRepository();
       const useCase = new DeleteMedicineUseCase(repository);
 
-      const deleteMedicine = await useCase.execute(id);
-
-      if (!deleteMedicine.success)
-        throw new Error("Remédio não deletado");
+      await useCase.execute(id);
 
       res.status(200).json({
         status: "success",
-        message: "Remédio excluído com sucesso"
+        message: "Remédio deletado com sucesso"
       });
-    } catch (e) {
-      const error = e as { message: string };
-      res.status(400).json({
-        status: 400,
-        message: error.message,
-      });
+    } catch (error) {
+      if (error instanceof HttpError) {
+        res.status(error.statusCode).json({
+          status: "error",
+          message: error.message
+        });
+      }
+
+      else
+        res.status(500).json({
+          status: "error",
+          message: "Erro ao deletar remédio"
+        });
     }
   }
 
@@ -84,65 +79,65 @@ class MedicineController {
       const { title, interval, dosage } = req.body;
       const { id } = req.params;
 
-      try {
-        if (!title) throw new Error("Title missing");
-        if (!interval) throw new Error("Inteval missing");
-        if (!dosage) throw new Error("Dosage missing");
-        if (!id) throw new Error("Medicine ID missing");
-      } catch (e) {
-        console.error(e);
-      }
+      if (!title) throw new HttpError("Title is required", 400);
+      if (!interval) throw new HttpError("Interval is required", 400);
+      if (!dosage) throw new HttpError("Dosage is required", 400);
+      if (!id) throw new HttpError("Medicine ID is required", 400);
 
       const repository = new MedicineRepository();
       const useCase = new EditMedicineUseCase(repository);
 
-      const editedMedicine = await useCase.execute(id, { title, interval, dosage });
-
-      if (!editedMedicine)
-        throw new Error("Remédio não editado");
+      await useCase.execute(id, { title, interval, dosage });
 
       res.status(200).json({
         status: "success",
-        messenger: "Remédio editado"
+        message: "Remédio editado com sucesso"
       });
-    } catch (e) {
-      const error = e as { message: string };
-      res.status(400).json({
-        status: "error",
-        message: error.message,
-      });
+    } catch (error) {
+      if (error instanceof HttpError) {
+        res.status(error.statusCode).json({
+          status: "error",
+          message: error.message
+        });
+      }
+
+      else
+        res.status(500).json({
+          status: "error",
+          message: "Erro ao editar remédio"
+        });
     }
   }
 
   async take(req: Request, res: Response) {
     try {
-      const { medicine_id, status } = req.body;
+      const { medicineId, status } = req.body;
 
-      try {
-        if (!medicine_id) throw new Error("Medicine ID missing");
-        if (!status) throw new Error("Status missing");
-      } catch (e) {
-        console.error(e);
-      }
+      if (!medicineId) throw new HttpError("Medicine ID is required", 400);
+      if (!status) throw new HttpError("Status is required", 400);
 
       const repository = new MedicineRepository();
       const useCase = new TakeMedicineUseCase(repository);
 
-      const medicineWasTaken = await useCase.execute({ medicine_id, status });
-
-      if (!medicineWasTaken)
-        throw new Error("Erro ao cadastrar remédio tomado");
+      await useCase.execute({ medicineId, status });
 
       res.status(200).json({
         status: "success",
-        message: "Status do remédio cadastrado"
+        message: "Remédio tomado cadastrado com sucesso"
       });
-    } catch (e) {
-      const error = e as { message: string };
-      res.status(400).json({
-        status: 400,
-        message: error.message,
-      });
+    } catch (error) {
+      if (error instanceof HttpError) {
+        res.status(error.statusCode).json({
+          status: "error",
+          message: error.message
+        });
+      }
+
+      else
+        res.status(500).json({
+          status: "error",
+          message: "Erro ao cadastrar remédio tomado"
+        });
     }
   }
 
@@ -150,30 +145,32 @@ class MedicineController {
     try {
       const { patientId } = req.params;
 
-      try {
-        if (patientId) throw new Error("Patient ID missing");
-      } catch (e) {
-        console.error(e);
-      }
+      if (!patientId) throw new HttpError("Patient ID is required", 400);
 
       const repository = new MedicineRepository();
       const useCase = new ListMedicineUseCase(repository);
 
       const listMedicines = await useCase.execute(patientId);
 
-      if (!listMedicines)
-        throw new Error("Lista de remédios não recuperada");
-
       res.status(200).json({
-        status: 'success',
-        medicines: listMedicines
+        status: "success",
+        message: "Remédios recuperados com sucesso",
+        total: listMedicines.total,
+        medicines: listMedicines.medicines
       });
-    } catch (e) {
-      const error = e as { message: string };
-      res.status(400).json({
-        status: 400,
-        message: error.message,
-      });
+    } catch (error) {
+      if (error instanceof HttpError) {
+        res.status(error.statusCode).json({
+          status: "error",
+          message: error.message
+        });
+      }
+
+      else
+        res.status(500).json({
+          status: "error",
+          message: "Erro ao listar remédios"
+        });
     }
   }
 }

@@ -9,7 +9,10 @@ export function authenticateToken(
   const token = req.headers.authorization;
 
   if (!token)
-    return res.status(401).json({ status: "error", message: "Token não fornecido" });
+    return res.status(401).json({
+      status: "error",
+      message: "Token não fornecido"
+    });
 
   try {
     const jwtSecret = process.env.JWT_SECRET;
@@ -20,11 +23,13 @@ export function authenticateToken(
 
     const decoded = jwt.verify(tokenValue, jwtSecret);
 
-    req.user = decoded as { user_id: string; cpf: string; role: string, hospital_id: string };
+    req.user = decoded as { userId: string; cpf: string; role: string, hospitalId: string };
 
     next();
   } catch (error) {
-    console.error(error);
-    return res.status(403).json({ status: "error", message: "Token inválido" });
+    return res.status(403).json({
+      status: "error",
+      message: "Token inválido"
+    });
   }
 }

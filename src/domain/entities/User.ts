@@ -4,5 +4,5 @@ export type User = {
   name: string;
   password: string;
   role: string;
-  hospital_id: string;
+  hospitalId: string;
 };

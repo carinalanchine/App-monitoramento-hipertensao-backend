@@ -1,7 +1,7 @@
 import { Video } from "../entities/Video";
 
-type CreateVideoInput = Omit<Video, "id">;
-type EditVideoInput = Omit<Video, "id" | "hospitalId">;
+export type CreateVideoInput = Omit<Video, "id">;
+export type EditVideoInput = Omit<Video, "id" | "hospitalId">;
 
 export interface IVideoRepository {
   createVideo(video: CreateVideoInput): Promise<{ id: string } | null>;

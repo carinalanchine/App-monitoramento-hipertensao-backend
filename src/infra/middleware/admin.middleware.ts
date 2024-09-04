@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import HttpError from "../exceptions/httpError";
 
 export function authorizationAdmin(
   req: Request,
@@ -9,14 +10,24 @@ export function authorizationAdmin(
     const { user } = req;
 
     if (!user)
-      throw new Error("Usuário não encontrado");
+      throw new HttpError("User is missing", 500);
 
     if (user.role !== "ADMIN")
-      throw new Error("Usuário não é administrador");
+      throw new HttpError("Usuário não é administrador", 403);
 
     next();
   } catch (error) {
-    console.error(error);
-    return res.status(403).json({ status: "error", message: "Usuário inválido" });
+    if (error instanceof HttpError) {
+      res.status(error.statusCode).json({
+        status: "error",
+        message: error.message
+      });
+    }
+
+    else
+      res.status(403).json({
+        status: "error",
+        message: "Usuário inválido"
+      });
   }
 }

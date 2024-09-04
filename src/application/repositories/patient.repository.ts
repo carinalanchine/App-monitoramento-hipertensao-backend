@@ -1,10 +1,11 @@
 import { prisma } from "../../infra/db/prisma";
 import { Patient } from "../../domain/entities/Patient";
+import HttpError from "../../infra/exceptions/httpError";
 
 class PatientRepository {
   async createPatient({
     cpf,
-    hospital_id,
+    hospitalId,
     name,
     password,
     role
@@ -16,7 +17,7 @@ class PatientRepository {
           name,
           password,
           role,
-          hospitalId: hospital_id
+          hospitalId
         }
       });
 
@@ -27,7 +28,7 @@ class PatientRepository {
         id: userCreated.id,
       };
     } catch (error) {
-      throw new Error(`Error on create patient: ${error}`);
+      throw new HttpError("Error on create patient", 500);
     }
   }
 }

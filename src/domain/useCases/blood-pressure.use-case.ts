@@ -1,4 +1,5 @@
 import { BloodPressure } from "../entities/BloodPressure"
+import HttpError from "../../infra/exceptions/httpError";
 import { IBloodPressureRepository } from "../interfaces/IBloodPressureRepository";
 
 export class CreateBloodPressureUseCase {
@@ -10,8 +11,8 @@ export class CreateBloodPressureUseCase {
     const bloodPressure = await this.bloodPressureRepository.createBloodPressure(pressure);
 
     if (!bloodPressure)
-      throw new Error("Error in blood pressure registration")
+      throw new HttpError("Pressão não criada", 500);
 
-    return bloodPressure.id;
+    return { id: bloodPressure.id };
   }
 }

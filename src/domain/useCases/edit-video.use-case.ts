@@ -1,3 +1,4 @@
+import HttpError from "../../infra/exceptions/httpError";
 import { IVideoRepository, EditVideoInput } from "../interfaces/IVideoRepository";
 
 export class EditVideoUseCase {
@@ -5,16 +6,16 @@ export class EditVideoUseCase {
     private videoRepository: IVideoRepository,
   ) { }
 
-  async execute(videoId: string, video: EditVideoInput) {
-    const videoExists = await this.videoRepository.findVideoById(videoId);
+  async execute(id: string, video: EditVideoInput) {
+    const videoExists = await this.videoRepository.findVideoById(id);
 
-    if (!videoExists) {
-      throw new Error("Video not found");
-    }
+    if (!videoExists)
+      throw new HttpError("Vídeo não encontrado", 404);
 
-    const videoEdited = await this.videoRepository.editVideo(videoId, video);
+    const videoEdited = await this.videoRepository.editVideo(id, video);
 
-    if (!videoEdited) throw new Error("Video not edited");
+    if (!videoEdited)
+      throw new HttpError("Vídeo não editado", 500);
 
     return { id: videoEdited.id };
   }

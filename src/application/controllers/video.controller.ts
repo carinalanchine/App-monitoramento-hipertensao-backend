@@ -4,62 +4,71 @@ import { CreateVideoUseCase } from "../../domain/useCases/create-video.use-case"
 import { DeleteVideoUseCase } from "../../domain/useCases/delete-video.use-case";
 import { EditVideoUseCase } from "../../domain/useCases/edit-video.use-case";
 import { ListVideoUseCase } from "../../domain/useCases/list-video.use-case";
+import HttpError from "../../infra/exceptions/httpError";
 
 class VideoController {
   async create(req: Request, res: Response) {
     try {
       const { title, url } = req.body;
-      const hospitalId = req.user.hospital_id;
+      const hospitalId = req.user.hospitalId;
+
+      if (!title) throw new HttpError("Title is required", 400);
+      if (!url) throw new HttpError("URL is required", 400);
+      if (!hospitalId) throw new HttpError("Hospital ID is missing", 500);
 
       const repository = new VideoRepository();
       const useCase = new CreateVideoUseCase(repository);
 
-      const createdVideo = await useCase.execute({ title, url, hospitalId });
+      await useCase.execute({ title, url, hospitalId });
 
-      if (!createdVideo) {
-        res.status(400).json({
-          status: 400,
-          messenger: "Video not created",
+      res.status(201).json({
+        status: "success",
+        message: "Vídeo cadastrado com sucesso"
+      });
+    } catch (error) {
+      if (error instanceof HttpError) {
+        res.status(error.statusCode).json({
+          status: "error",
+          message: error.message
         });
-        return;
       }
 
-      res.json({ status: 200, messenger: "Video created", id: createdVideo.id });
-    } catch (e) {
-      const error = e as { message: string };
-      res.status(400).json({
-        status: 400,
-        message: error.message,
-      });
-      return;
+      else
+        res.status(500).json({
+          status: "error",
+          message: "Erro ao cadastrar vídeo"
+        });
     }
   }
 
   async delete(req: Request, res: Response) {
     try {
       const { id } = req.body;
+
+      if (!id) throw new HttpError("Video ID is required", 400);
+
       const repository = new VideoRepository();
       const useCase = new DeleteVideoUseCase(repository);
 
-      if (!id) {
-        res.status(400).json({
-          status: 400,
-          messenger: "videoId missing",
-        });
-        return;
-      }
-
       await useCase.execute(id);
 
-      res.json({ status: 200, messenger: "Video deleted" });
-
-    } catch (e) {
-      const error = e as { message: string };
-      res.status(400).json({
-        status: 400,
-        message: error.message,
+      res.status(200).json({
+        status: "success",
+        message: "Vídeo deletado com sucesso"
       });
-      return;
+    } catch (error) {
+      if (error instanceof HttpError) {
+        res.status(error.statusCode).json({
+          status: "error",
+          message: error.message
+        });
+      }
+
+      else
+        res.status(500).json({
+          status: "error",
+          message: "Erro ao deletar vídeo"
+        });
     }
   }
 
@@ -67,43 +76,68 @@ class VideoController {
     try {
       const { title, url } = req.body;
       const { videoId } = req.params;
+
+      if (!title) throw new HttpError("Title is required", 400);
+      if (!url) throw new HttpError("URL is required", 400);
+      if (!videoId) throw new HttpError("Video ID is required", 400);
+
       const repository = new VideoRepository();
       const useCase = new EditVideoUseCase(repository);
 
       await useCase.execute(videoId, { title, url })
 
-      res.json({ status: 200, messenger: "Video edited" });
-
-    } catch (e) {
-      const error = e as { message: string };
-      res.status(400).json({
-        status: 400,
-        message: error.message,
+      res.status(200).json({
+        status: "success",
+        message: "Vídeo editado com sucesso"
       });
-      return;
+    } catch (error) {
+      if (error instanceof HttpError) {
+        res.status(error.statusCode).json({
+          status: "error",
+          message: error.message
+        });
+      }
+
+      else
+        res.status(500).json({
+          status: "error",
+          message: "Erro ao editar vídeo"
+        });
     }
   }
 
   async list(req: Request, res: Response) {
     try {
-      const hospitalId = "17a557d6-697a-450b-b28c-bfdeca6cb23a";
+      const hospitalId = req.user.hospitalId;
+
+      if (!hospitalId) throw new HttpError("Hospital ID missing", 500);
+
       const repository = new VideoRepository();
       const useCase = new ListVideoUseCase(repository);
 
-      const listVideo = await useCase.execute(hospitalId);
+      const listVideos = await useCase.execute(hospitalId);
 
-      res.status(200).json({ status: "success", videos: listVideo });
-
-    } catch (e) {
-      const error = e as { message: string };
-      res.status(400).json({
-        status: 400,
-        message: error.message,
+      res.status(200).json({
+        status: "success",
+        message: "Vídeos recuperados com sucesso",
+        total: listVideos.total,
+        videos: listVideos.videos
       });
-      return;
+    } catch (error) {
+      if (error instanceof HttpError) {
+        res.status(error.statusCode).json({
+          status: "error",
+          message: error.message
+        });
+      }
+
+      else
+        res.status(500).json({
+          status: "error",
+          message: "Erro ao listar vídeos"
+        });
     }
   }
-
 }
 
 export default new VideoController();

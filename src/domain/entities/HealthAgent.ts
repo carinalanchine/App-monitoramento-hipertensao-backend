@@ -6,5 +6,5 @@ export type HealthAgent = {
   name: string;
   role: RolesEnum;
   password: string;
-  hospital_id: string;
+  hospitalId: string;
 };

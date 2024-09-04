@@ -1,5 +1,6 @@
 import { Patient } from "../entities/Patient";
 import { RolesEnum } from "../entities/Role";
+import HttpError from "../../infra/exceptions/httpError";
 import { ICriptography } from "../interfaces/ICriptographyAdapter";
 import { IPatientRepository } from "../interfaces/IPatientRepository";
 
@@ -19,8 +20,8 @@ export class CreatePatientUseCase {
     });
 
     if (!patientCreated)
-      throw new Error("Patient not created");
+      throw new HttpError("Paciente não criado", 500);
 
-    return patientCreated.id;
+    return { id: patientCreated.id };
   }
 }

@@ -2,6 +2,7 @@ import { ICriptography } from "../interfaces/ICriptographyAdapter";
 import { IHealthAgentRepository } from "../interfaces/IHealthAgentRepository";
 import { RolesEnum } from "../entities/Role";
 import { HealthAgent } from "../entities/HealthAgent";
+import HttpError from "../../infra/exceptions/httpError";
 
 export class CreateHealthAgentUseCase {
   constructor(
@@ -19,8 +20,8 @@ export class CreateHealthAgentUseCase {
     });
 
     if (!agentCreated)
-      throw new Error("Health agent not created");
+      throw new HttpError("Agente de saúde não criado", 500);
 
-    return agentCreated.id;
+    return { id: agentCreated.id };
   }
 }

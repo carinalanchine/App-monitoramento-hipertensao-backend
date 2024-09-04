@@ -6,5 +6,5 @@ export type Patient = {
   name: string;
   role: RolesEnum;
   password: string;
-  hospital_id: string;
+  hospitalId: string;
 };

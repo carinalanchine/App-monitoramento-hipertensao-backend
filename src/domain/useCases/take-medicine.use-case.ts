@@ -1,4 +1,5 @@
 import { TakeMedicine } from "../entities/Medicine";
+import HttpError from "../../infra/exceptions/httpError";
 import { IMedicineRepository } from "../interfaces/IMedicineRepository";
 
 type TakeMedicineInput = Omit<TakeMedicine, "id">;
@@ -8,17 +9,17 @@ export class TakeMedicineUseCase {
     private medicineRepository: IMedicineRepository
   ) { }
 
-  async execute({ medicine_id, status }: TakeMedicineInput) {
-    const medicine = await this.medicineRepository.findMedicineById(medicine_id);
+  async execute({ medicineId, status }: TakeMedicineInput) {
+    const medicine = await this.medicineRepository.findMedicineById(medicineId);
 
     if (!medicine)
-      throw new Error("Medicine not found");
+      throw new HttpError("Remédio não encontrado", 404);
 
-    const medicineTaken = await this.medicineRepository.takeMedicine(medicine_id, status);
+    const medicineTaken = await this.medicineRepository.takeMedicine(medicineId, status);
 
     if (!medicineTaken)
-      throw new Error("Medicine status not registered");
+      throw new HttpError("Remédio tomado não criado", 500);
 
-    return medicineTaken.id;
+    return { id: medicineTaken.id };
   }
 }

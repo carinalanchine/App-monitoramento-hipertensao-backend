@@ -9,11 +9,11 @@ export type Medicine = {
   title: string;
   interval: string;
   dosage: string;
-  patient_id: string;
+  patientId: string;
 };
 
 export type TakeMedicine = {
   id: string;
-  medicine_id: string;
+  medicineId: string;
   status: MedicineTakenStatus;
 }

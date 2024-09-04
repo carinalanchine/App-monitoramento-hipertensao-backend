@@ -1,17 +1,22 @@
-import { Medicine } from "../entities/Medicine";
-import { IMedicineRepository } from "../interfaces/IMedicineRepository";
+import HttpError from "../../infra/exceptions/httpError";
+import { EditMedicineInput, IMedicineRepository } from "../interfaces/IMedicineRepository";
 
 export class EditMedicineUseCase {
   constructor(
     private medicineRepository: IMedicineRepository,
   ) { }
 
-  async execute(id: string, medicine: Omit<Medicine, "id" | "patient_id">) {
+  async execute(id: string, medicine: EditMedicineInput) {
+    const medicineExists = await this.medicineRepository.findMedicineById(id);
+
+    if (!medicineExists)
+      throw new HttpError("Remédio não encontrado", 404);
+
     const medicineEdited = await this.medicineRepository.editMedicine(id, medicine);
 
     if (!medicineEdited)
-      throw new Error("Medicine not edited");
+      throw new HttpError("Remédio não editado", 500);
 
-    return medicineEdited.id;
+    return { id: medicineEdited.id };
   }
 }

@@ -6,13 +6,9 @@ export class ListMedicineUseCase {
   ) { }
 
   async execute(patientId: string) {
-    const arrayMedicines = await this.medicineRepository.findMedicineByPatientId(patientId);
+    const medicines = await this.medicineRepository.findMedicineByPatientId(patientId);
+    const total = medicines.length;
 
-    if (!arrayMedicines)
-      throw new Error("Erro ao recuperar remédios");
-
-    return arrayMedicines.map(medicine => ({
-      ...medicine
-    }));
+    return { medicines, total };
   }
 }
