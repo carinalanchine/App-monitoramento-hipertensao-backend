@@ -38,8 +38,9 @@ export class LoginUseCase {
     if (!jwtSecret)
       throw new Error("JWT_SECRET não definido");
 
-    const token = jwt.sign({ userId, cpf, role, hospitalId }, jwtSecret, { expiresIn: "30 days", });
+    const accessToken = jwt.sign({ userId, cpf, role, hospitalId }, jwtSecret, { expiresIn: "1h", });
+    const refreshToken = jwt.sign({ userId, cpf, role, hospitalId }, jwtSecret, { expiresIn: "30 days", });
 
-    return token;
+    return { accessToken, refreshToken };
   }
 }
