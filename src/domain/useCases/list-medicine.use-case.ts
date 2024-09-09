@@ -7,8 +7,7 @@ export class ListMedicineUseCase {
 
   async execute(patientId: string) {
     const medicines = await this.medicineRepository.findMedicineByPatientId(patientId);
-    const total = medicines.length;
 
-    return { medicines, total };
+    return { medicines };
   }
 }

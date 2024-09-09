@@ -120,7 +120,6 @@ class VideoController {
       res.status(200).json({
         status: "success",
         message: "Vídeos recuperados com sucesso",
-        total: listVideos.total,
         videos: listVideos.videos
       });
     } catch (error) {

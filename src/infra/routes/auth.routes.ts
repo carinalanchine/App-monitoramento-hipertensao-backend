@@ -5,6 +5,6 @@ import { authenticateToken } from "../middleware/auth.middleware";
 const authRouter = Router();
 
 authRouter.post("/login", authController.login);
-authRouter.post("/refresh", authenticateToken, authController.refresh);
+authRouter.post("/token", authenticateToken, authController.refresh);
 
 export default authRouter;

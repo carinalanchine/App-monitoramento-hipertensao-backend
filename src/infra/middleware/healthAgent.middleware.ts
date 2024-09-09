@@ -23,11 +23,5 @@ export function authorizationHealthAgent(
         message: error.message
       });
     }
-
-    else
-      res.status(403).json({
-        status: "error",
-        message: "Usuário inválido"
-      });
   }
 }

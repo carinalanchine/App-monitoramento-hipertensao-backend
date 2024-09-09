@@ -7,8 +7,7 @@ export class ListVideoUseCase {
 
   async execute(hospital_id: string) {
     const videos = await this.videoRepository.findVideoByHospitalId(hospital_id);
-    const total = videos.length;
 
-    return { videos, total };
+    return { videos };
   }
 }

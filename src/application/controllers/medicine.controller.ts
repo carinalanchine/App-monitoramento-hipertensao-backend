@@ -155,7 +155,6 @@ class MedicineController {
       res.status(200).json({
         status: "success",
         message: "Remédios recuperados com sucesso",
-        total: listMedicines.total,
         medicines: listMedicines.medicines
       });
     } catch (error) {

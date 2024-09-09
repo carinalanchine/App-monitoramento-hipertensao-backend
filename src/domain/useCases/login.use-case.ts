@@ -25,7 +25,7 @@ export class LoginUseCase {
     const validPassword = this.criptography.compare(password, user.password);
 
     if (!validPassword)
-      throw new HttpError("Login não autorizado", 403);
+      throw new HttpError("Senha ou CPF incorretos", 401);
 
     const token = this.generateToken(user.id, user.cpf, user.role, user.hospitalId)
 

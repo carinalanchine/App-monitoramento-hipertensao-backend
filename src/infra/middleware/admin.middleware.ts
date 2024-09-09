@@ -13,7 +13,7 @@ export function authorizationAdmin(
       throw new HttpError("User is missing", 500);
 
     if (user.role !== "ADMIN")
-      throw new HttpError("Usuário não é administrador", 403);
+      throw new HttpError("Usuário não é autorizado", 403);
 
     next();
   } catch (error) {
@@ -23,11 +23,5 @@ export function authorizationAdmin(
         message: error.message
       });
     }
-
-    else
-      res.status(403).json({
-        status: "error",
-        message: "Usuário inválido"
-      });
   }
 }
