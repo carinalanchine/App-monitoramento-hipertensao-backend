@@ -2,7 +2,6 @@ import { prisma } from "../../infra/db/prisma";
 import { Medicine } from "../../domain/entities/Medicine";
 import { MedicineTakenStatus } from "@prisma/client";
 import { IMedicineRepository } from "../../domain/interfaces/IMedicineRepository";
-import HttpError from "../../infra/exceptions/httpError";
 
 type EditMedicineInput = Omit<Medicine, "id" | "createdAt" | "updatedAt" | "patientId">;
 
@@ -30,7 +29,7 @@ class MedicineRepository implements IMedicineRepository {
         id: medicineCreated.id,
       };
     } catch (error) {
-      throw new HttpError("Error on create medicine", 500);
+      throw new Error("Error on create medicine");
     }
   }
 
@@ -53,7 +52,7 @@ class MedicineRepository implements IMedicineRepository {
         patientId: medicine.patientId
       };
     } catch (error) {
-      throw new HttpError("Error on find medicine by ID", 500);
+      throw new Error("Error on find medicine by ID");
     }
   }
 
@@ -73,7 +72,7 @@ class MedicineRepository implements IMedicineRepository {
         patientId: medicine.patientId
       }));
     } catch (error) {
-      throw new HttpError("Error on find medicine by patient ID", 500);
+      throw new Error("Error on find medicine by patient ID");
     }
   }
 
@@ -85,7 +84,7 @@ class MedicineRepository implements IMedicineRepository {
         }
       });
     } catch (error) {
-      throw new HttpError("Error on delete medicine", 500);
+      throw new Error("Error on delete medicine");
     }
   }
 
@@ -103,7 +102,7 @@ class MedicineRepository implements IMedicineRepository {
         id: updatedMedicine.id,
       };
     } catch (error) {
-      throw new HttpError("Error on edit medicine", 500);
+      throw new Error("Error on edit medicine");
     }
   }
 
@@ -123,7 +122,7 @@ class MedicineRepository implements IMedicineRepository {
         id: medicineTaken.id,
       };
     } catch (error) {
-      throw new HttpError("Error on take medicine", 500);
+      throw new Error("Error on take medicine");
     }
   }
 }

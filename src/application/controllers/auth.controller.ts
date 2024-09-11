@@ -10,8 +10,8 @@ class AuthController {
     try {
       const { cpf, password } = req.body;
 
-      if (!cpf) throw new HttpError("CPF is required", 400);
-      if (!password) throw new HttpError("Password is required", 400);
+      if (!cpf) throw new HttpError("CPF não informado", 400);
+      if (!password) throw new HttpError("Senha não informada", 400);
 
       const repository = new UserRepository();
       const criptography = new CriptographyAdapter();
@@ -20,8 +20,7 @@ class AuthController {
       const loginUser = await useCase.execute({ cpf, password });
 
       res.status(200).json({
-        status: "success",
-        message: "Login realizado com sucesso",
+        message: "Login bem sucedido",
         accessToken: loginUser.token.accessToken,
         refreshToken: loginUser.token.refreshToken,
         user: {
@@ -33,16 +32,13 @@ class AuthController {
         }
       });
     } catch (error) {
-      if (error instanceof HttpError) {
+      if (error instanceof HttpError)
         res.status(error.statusCode).json({
-          status: "error",
           message: error.message
         });
-      }
 
       else
         res.status(500).json({
-          status: "error",
           message: "Erro ao fazer login"
         });
     }
@@ -52,30 +48,18 @@ class AuthController {
     try {
       const user = req.user;
 
-      if (!user) throw new HttpError("User is missing", 500)
-
       const useCase = new RefreshTokenUseCase();
       const refresh = await useCase.execute(user);
 
       res.status(200).json({
-        status: "success",
-        message: "Token refreshed",
+        message: "Token atualizado",
         accessToken: refresh.token.accessToken,
         refreshToken: refresh.token.refreshToken
       });
     } catch (error) {
-      if (error instanceof HttpError) {
-        res.status(error.statusCode).json({
-          status: "error",
-          message: error.message
-        });
-      }
-
-      else
-        res.status(500).json({
-          status: "error",
-          message: "Error on refresh token"
-        });
+      res.status(500).json({
+        message: "Erro ao atualizar token"
+      });
     }
   }
 }

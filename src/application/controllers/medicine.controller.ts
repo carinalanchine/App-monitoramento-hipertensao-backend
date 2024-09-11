@@ -13,10 +13,10 @@ class MedicineController {
     try {
       const { title, patientId, interval, dosage } = req.body;
 
-      if (!title) throw new HttpError("Title is required", 400);
-      if (!patientId) throw new HttpError("Patient ID is required", 400);
-      if (!interval) throw new HttpError("Interval is required", 400);
-      if (!dosage) throw new HttpError("Dosage is required", 400);
+      if (!title) throw new HttpError("Título não informado", 400);
+      if (!patientId) throw new HttpError("ID do paciente não informado", 400);
+      if (!interval) throw new HttpError("Intervalo não informado", 400);
+      if (!dosage) throw new HttpError("Dosagem não informada", 400);
 
       const repository = new MedicineRepository();
       const useCase = new CreateMedicineUseCase(repository);
@@ -24,20 +24,16 @@ class MedicineController {
       await useCase.execute({ title, patientId, interval, dosage });
 
       res.status(201).json({
-        status: "success",
-        message: "Remédio cadastrado com sucesso"
+        message: "Cadastro de remédio bem sucedido"
       });
     } catch (error) {
-      if (error instanceof HttpError) {
+      if (error instanceof HttpError)
         res.status(error.statusCode).json({
-          status: "error",
           message: error.message
         });
-      }
 
       else
         res.status(500).json({
-          status: "error",
           message: "Erro ao cadastrar remédio"
         });
     }
@@ -47,7 +43,7 @@ class MedicineController {
     try {
       const { id } = req.params;
 
-      if (!id) throw new HttpError("Medicine ID is required", 400);
+      if (!id) throw new HttpError("ID do remédio não informado", 400);
 
       const repository = new MedicineRepository();
       const useCase = new DeleteMedicineUseCase(repository);
@@ -55,21 +51,17 @@ class MedicineController {
       await useCase.execute(id);
 
       res.status(200).json({
-        status: "success",
-        message: "Remédio deletado com sucesso"
+        message: "Exclusão de remédio bem sucedida"
       });
     } catch (error) {
-      if (error instanceof HttpError) {
+      if (error instanceof HttpError)
         res.status(error.statusCode).json({
-          status: "error",
           message: error.message
         });
-      }
 
       else
         res.status(500).json({
-          status: "error",
-          message: "Erro ao deletar remédio"
+          message: "Erro ao excluir remédio"
         });
     }
   }
@@ -79,10 +71,10 @@ class MedicineController {
       const { title, interval, dosage } = req.body;
       const { id } = req.params;
 
-      if (!title) throw new HttpError("Title is required", 400);
-      if (!interval) throw new HttpError("Interval is required", 400);
-      if (!dosage) throw new HttpError("Dosage is required", 400);
-      if (!id) throw new HttpError("Medicine ID is required", 400);
+      if (!title) throw new HttpError("Título não informado", 400);
+      if (!interval) throw new HttpError("Intervalo não informado", 400);
+      if (!dosage) throw new HttpError("Dosagem não informada", 400);
+      if (!id) throw new HttpError("ID do remédio não informado", 400);
 
       const repository = new MedicineRepository();
       const useCase = new EditMedicineUseCase(repository);
@@ -90,20 +82,16 @@ class MedicineController {
       await useCase.execute(id, { title, interval, dosage });
 
       res.status(200).json({
-        status: "success",
-        message: "Remédio editado com sucesso"
+        message: "Edição de remédio bem sucedida"
       });
     } catch (error) {
-      if (error instanceof HttpError) {
+      if (error instanceof HttpError)
         res.status(error.statusCode).json({
-          status: "error",
           message: error.message
         });
-      }
 
       else
         res.status(500).json({
-          status: "error",
           message: "Erro ao editar remédio"
         });
     }
@@ -113,29 +101,25 @@ class MedicineController {
     try {
       const { medicineId, status } = req.body;
 
-      if (!medicineId) throw new HttpError("Medicine ID is required", 400);
-      if (!status) throw new HttpError("Status is required", 400);
+      if (!medicineId) throw new HttpError("ID do remédio não informado", 400);
+      if (!status) throw new HttpError("Estado do remédio não informado", 400);
 
       const repository = new MedicineRepository();
       const useCase = new TakeMedicineUseCase(repository);
 
       await useCase.execute({ medicineId, status });
 
-      res.status(200).json({
-        status: "success",
-        message: "Remédio tomado cadastrado com sucesso"
+      res.status(201).json({
+        message: "Cadastro de remédio tomado bem sucedido"
       });
     } catch (error) {
-      if (error instanceof HttpError) {
+      if (error instanceof HttpError)
         res.status(error.statusCode).json({
-          status: "error",
           message: error.message
         });
-      }
 
       else
         res.status(500).json({
-          status: "error",
           message: "Erro ao cadastrar remédio tomado"
         });
     }
@@ -145,7 +129,7 @@ class MedicineController {
     try {
       const { patientId } = req.params;
 
-      if (!patientId) throw new HttpError("Patient ID is required", 400);
+      if (!patientId) throw new HttpError("ID do paciente não informado", 400);
 
       const repository = new MedicineRepository();
       const useCase = new ListMedicineUseCase(repository);
@@ -153,22 +137,18 @@ class MedicineController {
       const listMedicines = await useCase.execute(patientId);
 
       res.status(200).json({
-        status: "success",
         message: "Remédios recuperados com sucesso",
         medicines: listMedicines.medicines
       });
     } catch (error) {
-      if (error instanceof HttpError) {
+      if (error instanceof HttpError)
         res.status(error.statusCode).json({
-          status: "error",
           message: error.message
         });
-      }
 
       else
         res.status(500).json({
-          status: "error",
-          message: "Erro ao listar remédios"
+          message: "Erro ao recuperar remédios"
         });
     }
   }

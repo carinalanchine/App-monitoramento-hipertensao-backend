@@ -1,5 +1,4 @@
 import { HealthAgent } from "../../domain/entities/HealthAgent";
-import HttpError from "../../infra/exceptions/httpError";
 import { prisma } from "../../infra/db/prisma";
 
 class HealthAgentRepository {
@@ -29,7 +28,7 @@ class HealthAgentRepository {
       }
 
     } catch (error) {
-      throw new HttpError("Error on create health agent", 500);
+      throw new Error("Error on create health agent");
     }
   }
 }

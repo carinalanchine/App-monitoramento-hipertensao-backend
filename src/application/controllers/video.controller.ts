@@ -12,9 +12,8 @@ class VideoController {
       const { title, url } = req.body;
       const hospitalId = req.user.hospitalId;
 
-      if (!title) throw new HttpError("Title is required", 400);
-      if (!url) throw new HttpError("URL is required", 400);
-      if (!hospitalId) throw new HttpError("Hospital ID is missing", 500);
+      if (!title) throw new HttpError("Título não informado", 400);
+      if (!url) throw new HttpError("URL não informada", 400);
 
       const repository = new VideoRepository();
       const useCase = new CreateVideoUseCase(repository);
@@ -22,20 +21,16 @@ class VideoController {
       await useCase.execute({ title, url, hospitalId });
 
       res.status(201).json({
-        status: "success",
-        message: "Vídeo cadastrado com sucesso"
+        message: "Cadastro de vídeo bem sucedido"
       });
     } catch (error) {
-      if (error instanceof HttpError) {
+      if (error instanceof HttpError)
         res.status(error.statusCode).json({
-          status: "error",
           message: error.message
         });
-      }
 
       else
         res.status(500).json({
-          status: "error",
           message: "Erro ao cadastrar vídeo"
         });
     }
@@ -45,7 +40,7 @@ class VideoController {
     try {
       const { id } = req.body;
 
-      if (!id) throw new HttpError("Video ID is required", 400);
+      if (!id) throw new HttpError("ID do vídeo não informado", 400);
 
       const repository = new VideoRepository();
       const useCase = new DeleteVideoUseCase(repository);
@@ -53,21 +48,17 @@ class VideoController {
       await useCase.execute(id);
 
       res.status(200).json({
-        status: "success",
-        message: "Vídeo deletado com sucesso"
+        message: "Exclusão de vídeo bem sucedida"
       });
     } catch (error) {
-      if (error instanceof HttpError) {
+      if (error instanceof HttpError)
         res.status(error.statusCode).json({
-          status: "error",
           message: error.message
         });
-      }
 
       else
         res.status(500).json({
-          status: "error",
-          message: "Erro ao deletar vídeo"
+          message: "Erro ao excluir vídeo"
         });
     }
   }
@@ -77,9 +68,9 @@ class VideoController {
       const { title, url } = req.body;
       const { videoId } = req.params;
 
-      if (!title) throw new HttpError("Title is required", 400);
-      if (!url) throw new HttpError("URL is required", 400);
-      if (!videoId) throw new HttpError("Video ID is required", 400);
+      if (!title) throw new HttpError("Título não informado", 400);
+      if (!url) throw new HttpError("URL não informada", 400);
+      if (!videoId) throw new HttpError("ID do vídeo não informado", 400);
 
       const repository = new VideoRepository();
       const useCase = new EditVideoUseCase(repository);
@@ -87,20 +78,16 @@ class VideoController {
       await useCase.execute(videoId, { title, url })
 
       res.status(200).json({
-        status: "success",
-        message: "Vídeo editado com sucesso"
+        message: "Edição de vídeo bem sucedida"
       });
     } catch (error) {
-      if (error instanceof HttpError) {
+      if (error instanceof HttpError)
         res.status(error.statusCode).json({
-          status: "error",
           message: error.message
         });
-      }
 
       else
         res.status(500).json({
-          status: "error",
           message: "Erro ao editar vídeo"
         });
     }
@@ -110,30 +97,24 @@ class VideoController {
     try {
       const hospitalId = req.user.hospitalId;
 
-      if (!hospitalId) throw new HttpError("Hospital ID missing", 500);
-
       const repository = new VideoRepository();
       const useCase = new ListVideoUseCase(repository);
 
       const listVideos = await useCase.execute(hospitalId);
 
       res.status(200).json({
-        status: "success",
         message: "Vídeos recuperados com sucesso",
         videos: listVideos.videos
       });
     } catch (error) {
-      if (error instanceof HttpError) {
+      if (error instanceof HttpError)
         res.status(error.statusCode).json({
-          status: "error",
           message: error.message
         });
-      }
 
       else
         res.status(500).json({
-          status: "error",
-          message: "Erro ao listar vídeos"
+          message: "Erro ao recuperar vídeos"
         });
     }
   }

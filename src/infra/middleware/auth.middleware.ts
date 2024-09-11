@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+import HttpError from "../exceptions/httpError";
 
 export function authenticateToken(
   req: Request,
@@ -9,8 +10,7 @@ export function authenticateToken(
   const token = req.headers.authorization;
 
   if (!token)
-    return res.status(401).json({
-      status: "error",
+    return res.status(400).json({
       message: "Token não fornecido"
     });
 
@@ -27,8 +27,7 @@ export function authenticateToken(
 
     next();
   } catch (error) {
-    return res.status(403).json({
-      status: "error",
+    return res.status(401).json({
       message: "Token inválido"
     });
   }

@@ -1,5 +1,4 @@
 import { Video } from "../../domain/entities/Video";
-import HttpError from "../../infra/exceptions/httpError";
 import { CreateVideoInput, IVideoRepository, EditVideoInput } from "../../domain/interfaces/IVideoRepository";
 import { prisma } from "../../infra/db/prisma";
 
@@ -21,7 +20,7 @@ class VideoRepository implements IVideoRepository {
         id: videoCreated.id
       }
     } catch (e) {
-      throw new HttpError("Error on create video", 500);
+      throw new Error("Error on create video");
     }
   }
 
@@ -44,7 +43,7 @@ class VideoRepository implements IVideoRepository {
       };
 
     } catch (e) {
-      throw new HttpError("Error on find video by ID", 500);
+      throw new Error("Error on find video by ID");
     }
   }
 
@@ -57,7 +56,7 @@ class VideoRepository implements IVideoRepository {
       })
 
     } catch (e) {
-      throw new HttpError("Error on delete video", 500);
+      throw new Error("Error on delete video");
     }
   }
 
@@ -76,7 +75,7 @@ class VideoRepository implements IVideoRepository {
       };
 
     } catch (e) {
-      throw new HttpError("Error on edit video", 500);
+      throw new Error("Error on edit video");
     }
   }
 
@@ -96,7 +95,7 @@ class VideoRepository implements IVideoRepository {
       }));
 
     } catch (e) {
-      throw new HttpError("Error on find video by hospital ID", 500);
+      throw new Error("Error on find video by hospital ID");
     }
   }
 }

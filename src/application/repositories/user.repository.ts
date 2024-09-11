@@ -1,5 +1,4 @@
 import { User } from "../../domain/entities/User";
-import HttpError from "../../infra/exceptions/httpError";
 import { IUserRepository } from "../../domain/interfaces/IUserRepository";
 import { prisma } from "../../infra/db/prisma";
 
@@ -24,7 +23,7 @@ class UserRepository implements IUserRepository {
         hospitalId: user.hospitalId
       }
     } catch (error) {
-      throw new HttpError("Error on find user by CPF", 500);
+      throw new Error("Error on find user by CPF");
     }
   }
 }

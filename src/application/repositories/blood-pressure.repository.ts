@@ -1,6 +1,5 @@
 import { prisma } from "../../infra/db/prisma";
 import { BloodPressure } from "../../domain/entities/BloodPressure";
-import HttpError from "../../infra/exceptions/httpError";
 
 class BloodPressureRepository {
   async createBloodPressure({
@@ -25,7 +24,7 @@ class BloodPressureRepository {
       }
 
     } catch (error) {
-      throw new HttpError("Error on create blood pressure", 500);
+      throw new Error("Error on create blood pressure");
     }
   }
 }

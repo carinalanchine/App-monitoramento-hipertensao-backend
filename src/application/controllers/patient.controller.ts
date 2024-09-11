@@ -9,10 +9,10 @@ class PatientController {
     try {
       const { cpf, name, password, hospitalId } = req.body;
 
-      if (!cpf) throw new HttpError("CPF is required", 400);
-      if (!name) throw new HttpError("Name is required", 400);
-      if (!password) throw new HttpError("Password is required", 400);
-      if (!hospitalId) throw new HttpError("Hospital ID is required", 400);
+      if (!cpf) throw new HttpError("CPF não informado", 400);
+      if (!name) throw new HttpError("Nome não informado", 400);
+      if (!password) throw new HttpError("Senha não informada", 400);
+      if (!hospitalId) throw new HttpError("ID do hospital não informado", 400);
 
       const repository = new PatientRepository();
       const criptography = new CriptographyAdapter();
@@ -21,20 +21,16 @@ class PatientController {
       await useCase.execute({ cpf, hospitalId, name, password });
 
       res.status(201).json({
-        status: "success",
-        message: "Paciente cadastrado com sucesso"
+        message: "Cadastro de paciente bem sucedido"
       });
     } catch (error) {
-      if (error instanceof HttpError) {
+      if (error instanceof HttpError)
         res.status(error.statusCode).json({
-          status: "error",
           message: error.message
         });
-      }
 
       else
         res.status(500).json({
-          status: "error",
           message: "Erro ao cadastrar paciente"
         });
     }

@@ -9,10 +9,10 @@ class HealthAgentController {
     try {
       const { name, cpf, password, hospitalId } = req.body;
 
-      if (!cpf) throw new HttpError("CPF is required", 400);
-      if (!name) throw new HttpError("Name is required", 400);
-      if (!password) throw new HttpError("Password is required", 400);
-      if (!hospitalId) throw new HttpError("Hospital ID is required", 400);
+      if (!cpf) throw new HttpError("CPF não informado", 400);
+      if (!name) throw new HttpError("Nome não informado", 400);
+      if (!password) throw new HttpError("Senha não informada", 400);
+      if (!hospitalId) throw new HttpError("ID do hospital não informado", 400);
 
       const repository = new HealthAgentRepository();
       const criptography = new CriptographyAdapter();
@@ -21,20 +21,16 @@ class HealthAgentController {
       await useCase.execute({ name, cpf, password, hospitalId });
 
       res.status(201).json({
-        status: "success",
-        message: "Agente de saúde cadastrado com sucesso"
+        message: "Cadastro de agente de saúde bem sucedido"
       });
     } catch (error) {
-      if (error instanceof HttpError) {
+      if (error instanceof HttpError)
         res.status(error.statusCode).json({
-          status: "error",
           message: error.message
         });
-      }
 
       else
         res.status(500).json({
-          status: "error",
           message: "Erro ao cadastrar agente de saúde"
         });
     }
