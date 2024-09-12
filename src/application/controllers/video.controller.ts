@@ -24,6 +24,7 @@ class VideoController {
         message: "Cadastro de vídeo bem sucedido"
       });
     } catch (error) {
+      console.error(error);
       if (error instanceof HttpError)
         res.status(error.statusCode).json({
           message: error.message
@@ -51,6 +52,7 @@ class VideoController {
         message: "Exclusão de vídeo bem sucedida"
       });
     } catch (error) {
+      console.error(error);
       if (error instanceof HttpError)
         res.status(error.statusCode).json({
           message: error.message
@@ -81,6 +83,7 @@ class VideoController {
         message: "Edição de vídeo bem sucedida"
       });
     } catch (error) {
+      console.error(error);
       if (error instanceof HttpError)
         res.status(error.statusCode).json({
           message: error.message
@@ -107,6 +110,7 @@ class VideoController {
         videos: listVideos.videos
       });
     } catch (error) {
+      console.error(error);
       if (error instanceof HttpError)
         res.status(error.statusCode).json({
           message: error.message

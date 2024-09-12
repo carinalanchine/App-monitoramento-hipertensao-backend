@@ -27,7 +27,7 @@ class PatientRepository {
         id: userCreated.id,
       };
     } catch (error) {
-      throw new Error("Error on create patient");
+      throw new Error("Error on create patient: " + `${error}`);
     }
   }
 }

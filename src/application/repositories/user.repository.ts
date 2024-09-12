@@ -23,7 +23,7 @@ class UserRepository implements IUserRepository {
         hospitalId: user.hospitalId
       }
     } catch (error) {
-      throw new Error("Error on find user by CPF");
+      throw new Error("Error on find user by CPF: " + `${error}`);
     }
   }
 }

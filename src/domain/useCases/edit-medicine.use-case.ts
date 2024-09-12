@@ -15,7 +15,7 @@ export class EditMedicineUseCase {
     const medicineEdited = await this.medicineRepository.editMedicine(id, medicine);
 
     if (!medicineEdited)
-      throw new HttpError("Remédio não editado", 500);
+      throw new Error("Remédio não editado");
 
     return { id: medicineEdited.id };
   }

@@ -24,6 +24,7 @@ class HealthAgentController {
         message: "Cadastro de agente de saúde bem sucedido"
       });
     } catch (error) {
+      console.error(error);
       if (error instanceof HttpError)
         res.status(error.statusCode).json({
           message: error.message

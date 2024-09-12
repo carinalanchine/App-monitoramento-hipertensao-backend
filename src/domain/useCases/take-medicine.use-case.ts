@@ -18,7 +18,7 @@ export class TakeMedicineUseCase {
     const medicineTaken = await this.medicineRepository.takeMedicine(medicineId, status);
 
     if (!medicineTaken)
-      throw new HttpError("Remédio tomado não criado", 500);
+      throw new Error("Remédio tomado não criado");
 
     return { id: medicineTaken.id };
   }

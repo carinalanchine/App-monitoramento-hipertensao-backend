@@ -15,7 +15,7 @@ export class EditVideoUseCase {
     const videoEdited = await this.videoRepository.editVideo(id, video);
 
     if (!videoEdited)
-      throw new HttpError("Vídeo não editado", 500);
+      throw new Error("Vídeo não editado");
 
     return { id: videoEdited.id };
   }

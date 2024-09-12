@@ -24,7 +24,7 @@ class BloodPressureRepository {
       }
 
     } catch (error) {
-      throw new Error("Error on create blood pressure");
+      throw new Error("Error on create blood pressure: " + `${error}`);
     }
   }
 }

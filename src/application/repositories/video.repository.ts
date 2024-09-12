@@ -19,8 +19,8 @@ class VideoRepository implements IVideoRepository {
       return {
         id: videoCreated.id
       }
-    } catch (e) {
-      throw new Error("Error on create video");
+    } catch (error) {
+      throw new Error("Error on create video: " + `${error}`);
     }
   }
 
@@ -42,8 +42,8 @@ class VideoRepository implements IVideoRepository {
         hospitalId: video.hospitalId
       };
 
-    } catch (e) {
-      throw new Error("Error on find video by ID");
+    } catch (error) {
+      throw new Error("Error on find video by ID: " + `${error}`);
     }
   }
 
@@ -55,8 +55,8 @@ class VideoRepository implements IVideoRepository {
         }
       })
 
-    } catch (e) {
-      throw new Error("Error on delete video");
+    } catch (error) {
+      throw new Error("Error on delete video: " + `${error}`);
     }
   }
 
@@ -74,8 +74,8 @@ class VideoRepository implements IVideoRepository {
         id: updatedVideo.id,
       };
 
-    } catch (e) {
-      throw new Error("Error on edit video");
+    } catch (error) {
+      throw new Error("Error on edit video: " + `${error}`);
     }
   }
 
@@ -94,8 +94,8 @@ class VideoRepository implements IVideoRepository {
         hospitalId: video.hospitalId
       }));
 
-    } catch (e) {
-      throw new Error("Error on find video by hospital ID");
+    } catch (error) {
+      throw new Error("Error on find video by hospital ID: " + `${error}`);
     }
   }
 }

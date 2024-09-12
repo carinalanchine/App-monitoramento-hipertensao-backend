@@ -27,6 +27,7 @@ class MedicineController {
         message: "Cadastro de remédio bem sucedido"
       });
     } catch (error) {
+      console.error(error);
       if (error instanceof HttpError)
         res.status(error.statusCode).json({
           message: error.message
@@ -54,6 +55,7 @@ class MedicineController {
         message: "Exclusão de remédio bem sucedida"
       });
     } catch (error) {
+      console.error(error);
       if (error instanceof HttpError)
         res.status(error.statusCode).json({
           message: error.message
@@ -85,6 +87,7 @@ class MedicineController {
         message: "Edição de remédio bem sucedida"
       });
     } catch (error) {
+      console.error(error);
       if (error instanceof HttpError)
         res.status(error.statusCode).json({
           message: error.message
@@ -113,6 +116,7 @@ class MedicineController {
         message: "Cadastro de remédio tomado bem sucedido"
       });
     } catch (error) {
+      console.error(error);
       if (error instanceof HttpError)
         res.status(error.statusCode).json({
           message: error.message
@@ -141,6 +145,7 @@ class MedicineController {
         medicines: listMedicines.medicines
       });
     } catch (error) {
+      console.error(error);
       if (error instanceof HttpError)
         res.status(error.statusCode).json({
           message: error.message

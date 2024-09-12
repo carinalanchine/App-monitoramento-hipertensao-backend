@@ -14,6 +14,7 @@ export function authorizationAdmin(
 
     next();
   } catch (error) {
+    console.error(error);
     if (error instanceof HttpError)
       res.status(error.statusCode).json({
         message: error.message

@@ -29,7 +29,7 @@ class MedicineRepository implements IMedicineRepository {
         id: medicineCreated.id,
       };
     } catch (error) {
-      throw new Error("Error on create medicine");
+      throw new Error("Error on create medicine: " + `${error}`);
     }
   }
 
@@ -52,7 +52,7 @@ class MedicineRepository implements IMedicineRepository {
         patientId: medicine.patientId
       };
     } catch (error) {
-      throw new Error("Error on find medicine by ID");
+      throw new Error("Error on find medicine by ID: " + `${error}`);
     }
   }
 
@@ -72,7 +72,7 @@ class MedicineRepository implements IMedicineRepository {
         patientId: medicine.patientId
       }));
     } catch (error) {
-      throw new Error("Error on find medicine by patient ID");
+      throw new Error("Error on find medicine by patient ID: " + `${error}`);
     }
   }
 
@@ -84,7 +84,7 @@ class MedicineRepository implements IMedicineRepository {
         }
       });
     } catch (error) {
-      throw new Error("Error on delete medicine");
+      throw new Error("Error on delete medicine: " + `${error}`);
     }
   }
 
@@ -102,7 +102,7 @@ class MedicineRepository implements IMedicineRepository {
         id: updatedMedicine.id,
       };
     } catch (error) {
-      throw new Error("Error on edit medicine");
+      throw new Error("Error on edit medicine: " + `${error}`);
     }
   }
 
@@ -122,7 +122,7 @@ class MedicineRepository implements IMedicineRepository {
         id: medicineTaken.id,
       };
     } catch (error) {
-      throw new Error("Error on take medicine");
+      throw new Error("Error on take medicine: " + `${error}`);
     }
   }
 }

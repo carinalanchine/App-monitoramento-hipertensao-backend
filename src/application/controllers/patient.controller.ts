@@ -24,6 +24,7 @@ class PatientController {
         message: "Cadastro de paciente bem sucedido"
       });
     } catch (error) {
+      console.error(error);
       if (error instanceof HttpError)
         res.status(error.statusCode).json({
           message: error.message

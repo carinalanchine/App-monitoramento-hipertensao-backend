@@ -1,4 +1,3 @@
-import HttpError from "../../infra/exceptions/httpError";
 import { CreateMedicineInput, IMedicineRepository } from "../interfaces/IMedicineRepository";
 
 export class CreateMedicineUseCase {
@@ -10,7 +9,7 @@ export class CreateMedicineUseCase {
     const medicineCreated = await this.medicineRepository.createMedicine({ ...medicine });
 
     if (!medicineCreated)
-      throw new HttpError("Remédio não criado", 500);
+      throw new Error("Remédio não criado");
 
     return { id: medicineCreated.id };
   }

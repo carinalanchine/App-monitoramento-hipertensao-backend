@@ -32,6 +32,7 @@ class AuthController {
         }
       });
     } catch (error) {
+      console.error(error);
       if (error instanceof HttpError)
         res.status(error.statusCode).json({
           message: error.message
@@ -57,6 +58,7 @@ class AuthController {
         refreshToken: refresh.token.refreshToken
       });
     } catch (error) {
+      console.error(error);
       res.status(500).json({
         message: "Erro ao atualizar token"
       });

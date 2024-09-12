@@ -28,7 +28,7 @@ class HealthAgentRepository {
       }
 
     } catch (error) {
-      throw new Error("Error on create health agent");
+      throw new Error("Error on create health agent: " + `${error}`);
     }
   }
 }

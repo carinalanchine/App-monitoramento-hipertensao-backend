@@ -1,4 +1,3 @@
-import HttpError from "../../infra/exceptions/httpError";
 import { CreateVideoInput, IVideoRepository } from "../interfaces/IVideoRepository";
 
 export class CreateVideoUseCase {
@@ -10,7 +9,7 @@ export class CreateVideoUseCase {
     const videoCreated = await this.videoRepository.createVideo({ ...video });
 
     if (!videoCreated)
-      throw new HttpError("Vídeo não criado", 500);
+      throw new Error("Vídeo não criado");
 
     return { id: videoCreated.id };
   }
